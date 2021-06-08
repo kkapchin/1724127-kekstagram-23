@@ -35,6 +35,17 @@ const COMMENTS = [
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!',
 ];
 
+const NAMES = [
+  'Джереми',
+  'Жозефина',
+  'Антуанетта',
+  'Крэг Хек',
+  'Гервульф',
+  'Лабета',
+  'Луна',
+  'Джейсон Стэтхэм',
+];
+
 const idCounter = () => {
   let counter = 1;
   return () => counter++;
@@ -47,7 +58,9 @@ const getRandomArrayElement = (elements) => elements[getRandomInt(0, elements.le
 function createComment (commentsIdCounter) {
   return {
     id: commentsIdCounter(),
+    avatar: 'img/avatar-' + getRandomInt(1, NAMES.length - 1) + '.svg',
     message: getRandomArrayElement(COMMENTS),
+    name: getRandomArrayElement(NAMES),
   };
 }
 
@@ -67,10 +80,10 @@ function getPost() {
   };
 }
 
+/* console.log(getPost());
 console.log(getPost());
 console.log(getPost());
-console.log(getPost());
-console.log(getPost());
+console.log(getPost()); */
 
 //keksobooking
 
@@ -80,3 +93,4 @@ const getRandomFloat = (min, max, quantity) =>
 //getRandomInt(1, 25);
 checkStrLength('string', 6);
 getRandomFloat(1, 2, 3);
+getPost();
