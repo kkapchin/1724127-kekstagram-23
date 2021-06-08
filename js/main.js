@@ -58,7 +58,7 @@ const getRandomArrayElement = (elements) => elements[getRandomInt(0, elements.le
 function createComment (commentsIdCounter) {
   return {
     id: commentsIdCounter(),
-    avatar: 'img/avatar-' + getRandomInt(1, NAMES.length - 1) + '.svg',
+    avatar: 'img/avatar-' + getRandomInt(1, 6) + '.svg',
     message: getRandomArrayElement(COMMENTS),
     name: getRandomArrayElement(NAMES),
   };
