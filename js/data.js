@@ -1,3 +1,5 @@
+const RANDOM_PICTURES_COUNT = 11;
+
 const DESCRIPTIONS = [
   'Lorem ipsum',
   'dolor sit',
@@ -33,4 +35,4 @@ const NAMES = [
   'Джейсон Стэтхэм',
 ];
 
-export { DESCRIPTIONS, COMMENTS, NAMES };
+export { DESCRIPTIONS, COMMENTS, NAMES, RANDOM_PICTURES_COUNT };
