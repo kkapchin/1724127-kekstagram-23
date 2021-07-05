@@ -35,4 +35,12 @@ const NAMES = [
   'Джейсон Стэтхэм',
 ];
 
-export { DESCRIPTIONS, COMMENTS, NAMES, RANDOM_PICTURES_COUNT };
+const VALID_FILE_FORMAT = ['.png', '.jpg', '.jpeg', '.gif'];
+
+export {
+  DESCRIPTIONS,
+  COMMENTS,
+  NAMES,
+  RANDOM_PICTURES_COUNT,
+  VALID_FILE_FORMAT
+};
