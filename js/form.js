@@ -1,7 +1,7 @@
 import { VALID_FILE_FORMAT } from './data.js';
-import { hashtagValidation } from './hashtags-validation.js';
 import { closePopup } from './utils/close-popup.js';
 import { openPopup } from './utils/open-popup.js';
+import './hashtags-validation.js';
 
 const upload = document.querySelector('.img-upload__form');
 const file = document.querySelector('#upload-file');
@@ -31,7 +31,6 @@ function changeHandler (evt) {
 
 function submitHandler (evt) {
   evt.preventDefault();
-  hashtagValidation();
 }
 
 file.addEventListener('change', changeHandler);
