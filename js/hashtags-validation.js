@@ -1,8 +1,8 @@
 import { isEscEvent } from './utils/is-escape-event.js';
 import { isSpaceEvent } from './utils/is-space-event.js';
 
-const regHashtag = /^#[a-zа-я0-9]{1,19}$/;
-const regInput = /[A-Za-z0-9А-Яа-я #]$/;
+const regHashtag = /^#[A-Za-zА-Яа-я0-9_]{1,19}$/;
+const regInput = /[A-Za-z0-9А-Яа-я #_]$/;
 const input = document.querySelector('.text__hashtags');
 
 function keydownHandler (evt) {
@@ -19,10 +19,20 @@ function keydownHandler (evt) {
       evt.preventDefault();
     }
   }
+  if(isSpaceEvent(evt)) {
+    const lowerCase = input.value.toLowerCase().split(' ');
+    let uniqIndexes = [];
+    lowerCase.filter((hashtag) => uniqIndexes.push(lowerCase.indexOf(hashtag)));
+    uniqIndexes = uniqIndexes.filter((item, index) => index === uniqIndexes.indexOf(item));
+    const uniqHashtags = [];
+    for(let i = 0; i < uniqIndexes.length; i++) {
+      uniqHashtags.push(hashtags[uniqIndexes[i]]);
+    }
+    input.value = uniqHashtags.join(' ');
+  }
 }
 
 function keyupHandler () {
-  input.value = input.value.toLowerCase();
   const hashtags = input.value.split(' ');
   const currentHashtag = hashtags[hashtags.length -1];
   if(!regHashtag.test(currentHashtag)) {
