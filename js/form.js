@@ -30,8 +30,7 @@ function changeHandler (evt) {
   reader.readAsDataURL(image);
 }
 
-function submitHandler (evt) {
-  evt.preventDefault();
+function submitHandler () {
 }
 
 file.addEventListener('change', changeHandler);
