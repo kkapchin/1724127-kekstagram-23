@@ -2,6 +2,7 @@ import { VALID_FILE_FORMAT } from './data.js';
 import { closePopup } from './utils/close-popup.js';
 import { openPopup } from './utils/open-popup.js';
 import './hashtags-validation.js';
+import './comments-validation.js';
 
 const upload = document.querySelector('.img-upload__form');
 const file = document.querySelector('#upload-file');

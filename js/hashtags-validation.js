@@ -42,5 +42,15 @@ function keyupHandler () {
   }
 }
 
+function focusoutHandler () {
+  const hashtags = input.value.split(' ');
+  const currentHashtag = hashtags[hashtags.length -1];
+  if(currentHashtag === '#') {
+    hashtags.pop();
+    input.value = hashtags.join(' ');
+  }
+}
+
 input.addEventListener('keydown', keydownHandler);
 input.addEventListener('keyup', keyupHandler);
+input.addEventListener('focusout', focusoutHandler);
