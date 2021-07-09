@@ -1,5 +1,4 @@
 import { isEscEvent } from './utils/is-escape-event.js';
-import { isSpaceEvent } from './utils/is-space-event.js';
 
 const regKeyup = /^#[a-zа-я0-9]{1,19}$/;
 const regKeydown = /[A-Za-z0-9А-Яа-я #]$/;
@@ -14,20 +13,24 @@ function keydownHandler (evt) {
   }
 }
 
-function keyupHandler (evt) {
+function keyupHandler () {
   input.value = input.value.toLowerCase();
   const hashtags = input.value.split(' ');
-
-  hashtags.forEach((hashtag) => {
-    if(!regKeyup.test(hashtag)) {
+  const currentHashtag = hashtags[hashtags.length -1];
+  if(!regKeyup.test(currentHashtag)) {
+    if(currentHashtag[0] !== '#') {
+      hashtags[hashtags.length -1] = `#${  currentHashtag.substring(0, 19)}`;
       input.value = hashtags.join(' ');
-      input.value += '';
-      input.setCustomValidity('Неверный формат');
     }
-  });
-  if(isSpaceEvent(evt)) {
-    input.value += '#';
-    input.value = input.value.trim();
+    if(currentHashtag.length >= 20) {
+      hashtags[hashtags.length -1] = currentHashtag.substring(0, 20);
+      input.value = hashtags.join(' ');
+      input.value += ' #';
+    }
+  }
+  if(hashtags.length > 5) {
+    hashtags.pop();
+    input.value = hashtags.join(' ');
   }
 }
 
