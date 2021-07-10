@@ -5,7 +5,9 @@ export function closePopup (button, element, callback) {
   button.addEventListener('click', () => {
     element.classList.add('hidden');
     body.classList.remove('modal-open');
-    callback();
+    if(!callback === undefined) {
+      callback();
+    }
   });
 
   document.addEventListener('keydown', (evt) => {
@@ -13,7 +15,9 @@ export function closePopup (button, element, callback) {
       evt.preventDefault();
       element.classList.add('hidden');
       body.classList.remove('modal-open');
-      callback();
+      if(!callback === undefined) {
+        callback();
+      }
     }
   });
 }

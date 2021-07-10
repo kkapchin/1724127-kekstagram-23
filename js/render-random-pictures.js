@@ -16,3 +16,5 @@ randomPictures.forEach(({url, description, likes, comments}) => {
 });
 
 picturesContainer.appendChild(randomPicturesFragment);
+
+export { randomPictures };
