@@ -1,12 +1,8 @@
 import { getRandomPositiveInteger } from './get-random-positive-integer.js';
 import { DESCRIPTIONS, COMMENTS, NAMES, RANDOM_PICTURES_COUNT } from '../data.js';
+import { makeCounter } from './make-counter.js';
 
-const idCounter = () => {
-  let counter = 1;
-  return () => counter++;
-};
-
-const getPictureId = idCounter();
+const getPictureId = makeCounter(1, 1);
 
 const getRandomArrayElement = (elements) => elements[getRandomPositiveInteger(0, elements.length - 1)];
 
@@ -20,8 +16,8 @@ function createComment (commentsIdCounter) {
 }
 
 function getCommentsList () {
-  const commentsIdCounter = idCounter();
-  const commentsList = new Array(getRandomPositiveInteger(3, 7)).fill(null).map(() => createComment(commentsIdCounter));
+  const commentsIdCounter = makeCounter(1, 1);
+  const commentsList = new Array(getRandomPositiveInteger(13, 27)).fill(null).map(() => createComment(commentsIdCounter));
   return commentsList;
 }
 
