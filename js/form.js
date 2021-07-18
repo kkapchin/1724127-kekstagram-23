@@ -15,7 +15,7 @@ upload.setAttribute('method', 'POST');
 upload.setAttribute('enctype', 'multipart/form-data');
 file.setAttribute('accept', VALID_FILE_FORMAT.join(','));
 
-function changeHandler (event) {
+function fileChangeHandler (event) {
   const image = event.target.files[0];
   const closeButton = document.querySelector('.img-upload__cancel');
   const reader = new FileReader();
@@ -24,6 +24,9 @@ function changeHandler (event) {
   const biggerBtn = document.querySelector('.scale__control--bigger');
   const effectsPreviews = document.querySelectorAll('.effects__preview');
   const effects = document.querySelectorAll('.effects__radio');
+  const sliderElement = document.querySelector('.effect-level__slider');
+  const effectValueElement = document.querySelector('.effect-level__value');
+  const fieldset = document.querySelector('.img-upload__effect-level');
   let currentEffect = 'effects__preview--none';
 
   function smallerBtnClickHandler () {
@@ -60,10 +63,91 @@ function changeHandler (event) {
     }
   }
 
+  function setNoUiSliderOptions (option) {
+    switch(option) {
+      case 'effects__preview--chrome':
+      case 'effects__preview--sepia':
+        sliderElement.noUiSlider.updateOptions({
+          range: {
+            min: 0,
+            max: 1,
+          },
+          step: 0.1,
+          start: 1,
+        });
+        break;
+      case 'effects__preview--heat':
+        sliderElement.noUiSlider.updateOptions({
+          range: {
+            min: 0,
+            max: 3,
+          },
+          step: 0.1,
+          start: 3,
+        });
+        break;
+      case 'effects__preview--marvin':
+        sliderElement.noUiSlider.updateOptions({
+          range: {
+            min: 0,
+            max: 100,
+          },
+          step: 1,
+          start: 100,
+        });
+        break;
+      case 'effects__preview--phobos':
+        sliderElement.noUiSlider.updateOptions({
+          range: {
+            min: 0,
+            max: 3,
+          },
+          step: 0.1,
+          start: 3,
+        });
+        break;
+    }
+  }
+
   function effectClickHandler (evt) {
     preview.classList.remove(currentEffect);
     currentEffect = `effects__preview--${evt.target.value}`;
     preview.classList.add(currentEffect);
+    setNoUiSliderOptions(currentEffect);
+    sliderElement.noUiSlider.on('update', (_, handle, unencoded) => {
+      switch(evt.target.value) {
+        case 'none':
+          fieldset.classList.add('hidden');
+          preview.style.filter = null;
+          effectValueElement.value = null;
+          break;
+        case 'chrome':
+          fieldset.classList.remove('hidden');
+          preview.style.filter = `grayscale(${effectValueElement.value})`;
+          effectValueElement.value = unencoded[handle];
+          break;
+        case 'sepia':
+          fieldset.classList.remove('hidden');
+          preview.style.filter = `sepia(${effectValueElement.value})`;
+          effectValueElement.value = unencoded[handle];
+          break;
+        case 'marvin':
+          fieldset.classList.remove('hidden');
+          preview.style.filter = `invert(${effectValueElement.value}%)`;
+          effectValueElement.value = unencoded[handle];
+          break;
+        case 'phobos':
+          fieldset.classList.remove('hidden');
+          preview.style.filter = `blur(${effectValueElement.value}px)`;
+          effectValueElement.value = unencoded[handle];
+          break;
+        case 'heat':
+          fieldset.classList.remove('hidden');
+          preview.style.filter = `brightness(${effectValueElement.value})`;
+          effectValueElement.value = unencoded[handle];
+          break;
+      }
+    });
   }
 
   function setDefaultEffect () {
@@ -71,19 +155,26 @@ function changeHandler (event) {
     currentEffect = 'effects__preview--none';
     preview.classList.add(currentEffect);
   }
+
   function reset () {
-    file.value = '';
+    file.value = null;
     smallerBtn.removeEventListener('click', smallerBtnClickHandler);
     biggerBtn.removeEventListener('click', biggerBtnClickHandler);
     effects.forEach((effect) => {
       effect.removeEventListener('click', effectClickHandler);
     });
     setDefaultEffect();
+    fieldset.classList.remove('hidden');
+    if(sliderElement.noUiSlider) {
+      sliderElement.noUiSlider.destroy();
+    }
+    preview.style.filter = null;
   }
-  //function
+
   openPopup(form);
   imgSize.value = '100%';
   preview.style.transform = 'scale(1)';
+  fieldset.classList.add('hidden');
   reader.onload = () => {
     preview.children[0].src = reader.result;
     effectsPreviews.forEach((background) => {
@@ -91,11 +182,15 @@ function changeHandler (event) {
     });
   };
   reader.readAsDataURL(image);
-  /* noUiSlider.create(preview, {
+  noUiSlider.create(sliderElement, {
     range: {
-      min:
+      min: 0,
+      max: 100,
     },
-  }); */
+    start: 80,
+    step: 10,
+    connect: 'lower',
+  });
   effects.forEach((effect) => {
     effect.addEventListener('click', effectClickHandler);
   });
@@ -104,8 +199,8 @@ function changeHandler (event) {
   closePopup(closeButton, form, reset);
 }
 
-function submitHandler () {
+function submitClickHandler () {
 }
 
-file.addEventListener('change', changeHandler);
-submit.addEventListener('click', submitHandler);
+file.addEventListener('change', fileChangeHandler);
+submit.addEventListener('click', submitClickHandler);
