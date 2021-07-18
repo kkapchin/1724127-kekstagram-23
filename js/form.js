@@ -22,56 +22,61 @@ function changeHandler (evt) {
   const imgSize = document.querySelector('.scale__control--value');
   const smallerBtn = document.querySelector('.scale__control--smaller');
   const biggerBtn = document.querySelector('.scale__control--bigger');
+  const effectsBackgrounds = document.querySelectorAll('.effects__preview');
 
   function smallerBtnClickHandler () {
     switch (imgSize.value) {
       case '100%':
         imgSize.value = '75%';
-        preview.setAttribute('style', 'transform: scale(0.75)');
+        preview.style.transform = 'scale(0.75)';
         break;
       case '75%':
         imgSize.value = '50%';
-        preview.setAttribute('style', 'transform: scale(0.5)');
+        preview.style.transform = 'scale(0.5)';
         break;
       case '50%':
         imgSize.value = '25%';
-        preview.setAttribute('style', 'transform: scale(0.25)');
-        break;
-      case '25%':
+        preview.style.transform = 'scale(0.25)';
         break;
     }
   }
 
   function biggerBtnClickHandler () {
     switch (imgSize.value) {
-      case '100%':
-        break;
       case '75%':
         imgSize.value = '100%';
-        preview.setAttribute('style', 'transform: scale(1)');
+        preview.style.transform = 'scale(1)';
         break;
       case '50%':
         imgSize.value = '75%';
-        preview.setAttribute('style', 'transform: scale(0.75)');
+        preview.style.transform = 'scale(0.75)';
         break;
       case '25%':
         imgSize.value = '50%';
-        preview.setAttribute('style', 'transform: scale(0.5)');
+        preview.style.transform = 'scale(0.5)';
         break;
     }
   }
 
+  function reset () {
+    file.value = '';
+    smallerBtn.removeEventListener('click', smallerBtnClickHandler);
+    biggerBtn.removeEventListener('click', biggerBtnClickHandler);
+  }
+  //function
   openPopup(form);
   imgSize.value = '100%';
-  reader.onload = (ev) => {
-    preview.children[0].src = ev.target.result;
+  preview.style.transform = 'scale(1)';
+  reader.onload = () => {
+    preview.children[0].src = reader.result;
+    effectsBackgrounds.forEach((background) => {
+      background.style.backgroundImage = `url(${reader.result})`;
+    });
   };
   reader.readAsDataURL(image);
   smallerBtn.addEventListener('click', smallerBtnClickHandler);
   biggerBtn.addEventListener('click', biggerBtnClickHandler);
-  closePopup(closeButton, form, () => {
-    file.value = '';
-  });
+  closePopup(closeButton, form, reset);
 }
 
 function submitHandler () {
