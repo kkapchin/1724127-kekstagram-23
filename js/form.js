@@ -15,14 +15,16 @@ upload.setAttribute('method', 'POST');
 upload.setAttribute('enctype', 'multipart/form-data');
 file.setAttribute('accept', VALID_FILE_FORMAT.join(','));
 
-function changeHandler (evt) {
-  const image = evt.target.files[0];
+function changeHandler (event) {
+  const image = event.target.files[0];
   const closeButton = document.querySelector('.img-upload__cancel');
   const reader = new FileReader();
   const imgSize = document.querySelector('.scale__control--value');
   const smallerBtn = document.querySelector('.scale__control--smaller');
   const biggerBtn = document.querySelector('.scale__control--bigger');
-  const effectsBackgrounds = document.querySelectorAll('.effects__preview');
+  const effectsPreviews = document.querySelectorAll('.effects__preview');
+  const effects = document.querySelectorAll('.effects__radio');
+  let currentEffect = 'effects__preview--none';
 
   function smallerBtnClickHandler () {
     switch (imgSize.value) {
@@ -58,10 +60,25 @@ function changeHandler (evt) {
     }
   }
 
+  function effectClickHandler (evt) {
+    preview.classList.remove(currentEffect);
+    currentEffect = `effects__preview--${evt.target.value}`;
+    preview.classList.add(currentEffect);
+  }
+
+  function setDefaultEffect () {
+    preview.classList.remove(currentEffect);
+    currentEffect = 'effects__preview--none';
+    preview.classList.add(currentEffect);
+  }
   function reset () {
     file.value = '';
     smallerBtn.removeEventListener('click', smallerBtnClickHandler);
     biggerBtn.removeEventListener('click', biggerBtnClickHandler);
+    effects.forEach((effect) => {
+      effect.removeEventListener('click', effectClickHandler);
+    });
+    setDefaultEffect();
   }
   //function
   openPopup(form);
@@ -69,11 +86,19 @@ function changeHandler (evt) {
   preview.style.transform = 'scale(1)';
   reader.onload = () => {
     preview.children[0].src = reader.result;
-    effectsBackgrounds.forEach((background) => {
+    effectsPreviews.forEach((background) => {
       background.style.backgroundImage = `url(${reader.result})`;
     });
   };
   reader.readAsDataURL(image);
+  /* noUiSlider.create(preview, {
+    range: {
+      min:
+    },
+  }); */
+  effects.forEach((effect) => {
+    effect.addEventListener('click', effectClickHandler);
+  });
   smallerBtn.addEventListener('click', smallerBtnClickHandler);
   biggerBtn.addEventListener('click', biggerBtnClickHandler);
   closePopup(closeButton, form, reset);
