@@ -1,3 +1,4 @@
+import { deleteEventListener } from './delete-event-listener.js';
 import { isEscEvent } from './is-escape-event.js';
 
 export function closePopup (button, element, callback) {
@@ -9,16 +10,18 @@ export function closePopup (button, element, callback) {
       evt.preventDefault();
       element.classList.add('hidden');
       body.classList.remove('modal-open');
-      callback();
       button.replaceWith(buttonClone);
+      deleteEventListener(document, 'keydown', onKeydownHandler);
+      callback();
     }
   }
 
   function onClickHandler () {
     element.classList.add('hidden');
     body.classList.remove('modal-open');
-    callback();
     button.replaceWith(buttonClone);
+    deleteEventListener(document, 'keydown', onKeydownHandler);
+    callback();
   }
 
   button.addEventListener('click', onClickHandler);

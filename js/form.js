@@ -5,13 +5,12 @@ import './hashtags-validation.js';
 import './comments-validation.js';
 import { sendData } from './connection.js';
 import { deleteEventListener } from './utils/delete-event-listener.js';
+import { isEscEvent } from './utils/is-escape-event.js';
 
 const upload = document.querySelector('.img-upload__form');
 const file = document.querySelector('#upload-file');
 const form = document.querySelector('.img-upload__overlay');
 const preview = document.querySelector('.img-upload__preview');
-const submit = document.querySelector('#upload-submit');
-const cancelButton = document.querySelector('.img-upload__cancel');
 
 upload.setAttribute('action', 'https://23.javascript.pages.academy/kekstagram');
 upload.setAttribute('method', 'POST');
@@ -29,6 +28,8 @@ function fileChangeHandler (event) {
   const sliderElement = document.querySelector('.effect-level__slider');
   const effectValueElement = document.querySelector('.effect-level__value');
   const fieldset = document.querySelector('.img-upload__effect-level');
+  const cancelButton = document.querySelector('.img-upload__cancel');
+  const submit = document.querySelector('#upload-submit');
   let currentEffect = 'effects__preview--none';
 
   function setDefaultEffect () {
@@ -152,11 +153,72 @@ function fileChangeHandler (event) {
     });
   }
 
-  function reset (callback) {
+  function submitClickHandler (evt) {
+    evt.preventDefault();
+    function onSuccess () {
+      const body = document.querySelector('body');
+      const successElement = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
+      const lastNode = document.querySelector('#messages');
+      const coolBtn = successElement.querySelector('.success__button');
+      const coolBtnClone = coolBtn.cloneNode(true);
+      const successInner = successElement.querySelector('.success__inner');
+      const cancelButtonClone = cancelButton.cloneNode(true);
+
+      function coolBtnClickHandler () {
+        body.classList.remove('modal-open');
+        coolBtn.replaceWith(coolBtnClone);
+        body.removeChild(successElement);
+      }
+
+      function successElementClickHandler (ev) {
+        ev.stopPropagation();
+        body.classList.remove('modal-open');
+        coolBtn.replaceWith(coolBtnClone);
+        body.removeChild(successElement);
+      }
+
+      function documentKeydownHandler (ev) {
+        if(isEscEvent(ev)) {
+          ev.preventDefault();
+          body.classList.remove('modal-open');
+          coolBtn.replaceWith(coolBtnClone);
+          body.removeChild(successElement);
+          deleteEventListener(document, 'keydown', documentKeydownHandler);
+        }
+      }
+      form.classList.add('hidden');
+      upload.reset();
+      file.value = null;
+      cancelButton.replaceWith(cancelButtonClone);
+      deleteEventListener(smallerBtn, 'click', smallerBtnClickHandler );
+      deleteEventListener(biggerBtn, 'click', biggerBtnClickHandler);
+      deleteEventListener(submit, 'click', submitClickHandler);
+      effects.forEach((effect) => {
+        deleteEventListener(effect, 'click', effectClickHandler);
+      });
+      setDefaultEffect();
+      fieldset.classList.remove('hidden');
+      if(sliderElement.noUiSlider) {
+        sliderElement.noUiSlider.destroy();
+      }
+      preview.style.filter = null;
+      body.appendChild(successElement, lastNode.nextSibling);
+      successElement.addEventListener('click', successElementClickHandler);
+      successInner.addEventListener('click', (e) => e.stopPropagation());
+      document.addEventListener('keydown', documentKeydownHandler);
+      coolBtn.addEventListener('click', coolBtnClickHandler);
+    }
+
+    const formData = new FormData(upload);
+    sendData(formData, onSuccess);
+  }
+
+  function reset () {
     upload.reset();
     file.value = null;
     deleteEventListener(smallerBtn, 'click', smallerBtnClickHandler );
     deleteEventListener(biggerBtn, 'click', biggerBtnClickHandler);
+    deleteEventListener(submit, 'click', submitClickHandler);
     effects.forEach((effect) => {
       deleteEventListener(effect, 'click', effectClickHandler);
     });
@@ -166,53 +228,6 @@ function fileChangeHandler (event) {
       sliderElement.noUiSlider.destroy();
     }
     preview.style.filter = null;
-    if(callback) {
-      callback();
-    }
-  }
-
-  function submitClickHandler (evt) {
-    evt.preventDefault();
-
-    function onSuccess () {
-      const body = document.querySelector('body');
-      const successElement = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
-      const lastNode = document.querySelector('#messages');
-      const coolBtn = successElement.querySelector('.success__button');
-      //const successInner = successElement.querySelector('.success__inner');
-
-      function removeSuccessEl () {
-        if(body.hasChildNodes(successElement)) {
-          //body.removeChild(successElement);
-        }
-      }
-
-      function resetWrapp () {
-        reset(removeSuccessEl);
-      }
-      /* function coolBtnClickHandler () {
-        body.removeChild(successElement);
-        body.classList.remove('modal-open');
-      }
-
-      function successElementClickHandler (ev) {
-        ev.stopPropagation();
-        body.removeChild(successElement);
-        body.classList.remove('modal-open');
-      } */
-
-      form.classList.add('hidden');
-      //body.classList.remove('modal-open');
-      reset();
-      closePopup(coolBtn, successElement, resetWrapp);
-      body.appendChild(successElement, lastNode.nextSibling);
-      //successElement.addEventListener('click', successElementClickHandler);
-      //successInner.addEventListener('click', (e) => e.stopPropagation());
-      //coolBtn.addEventListener('click', coolBtnClickHandler);
-    }
-
-    const formData = new FormData(upload);
-    sendData(formData, onSuccess);
   }
 
   openPopup(form);
