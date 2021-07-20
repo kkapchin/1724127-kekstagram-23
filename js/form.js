@@ -3,14 +3,14 @@ import { closePopup } from './utils/close-popup.js';
 import { openPopup } from './utils/open-popup.js';
 import './hashtags-validation.js';
 import './comments-validation.js';
-//import { sendPhoto } from './connection.js';
+import { sendData } from './connection.js';
 
 //const upload = document.querySelector('.img-upload__form');
 const file = document.querySelector('#upload-file');
 const form = document.querySelector('.img-upload__overlay');
 const preview = document.querySelector('.img-upload__preview');
 const submit = document.querySelector('#upload-submit');
-//const formData = new FormData();
+const formData = new FormData();
 
 //upload.setAttribute('action', 'https://23.javascript.pages.academy/kekstagram');
 ///upload.setAttribute('method', 'POST');
@@ -202,13 +202,9 @@ function fileChangeHandler (event) {
   closePopup(closeButton, form, reset);
 }
 
-function submitClickHandler () {
-  /* evt.preventDefault();
-  sendPhoto(
-    () => console.log('успех!'),
-    () => console.log('Не удалось отправить форму. Попробуйте ещё раз'),
-    formData.append('file', file.files[0]),
-  ); */
+function submitClickHandler (evt) {
+  evt.preventDefault();
+  sendData(formData.append('file', form));
 }
 
 file.addEventListener('change', fileChangeHandler);
