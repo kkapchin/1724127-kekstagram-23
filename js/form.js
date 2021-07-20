@@ -4,22 +4,22 @@ import { openPopup } from './utils/open-popup.js';
 import './hashtags-validation.js';
 import './comments-validation.js';
 import { sendData } from './connection.js';
+import { deleteEventListener } from './utils/delete-event-listener.js';
 
-//const upload = document.querySelector('.img-upload__form');
+const upload = document.querySelector('.img-upload__form');
 const file = document.querySelector('#upload-file');
 const form = document.querySelector('.img-upload__overlay');
 const preview = document.querySelector('.img-upload__preview');
 const submit = document.querySelector('#upload-submit');
-const formData = new FormData();
+const cancelButton = document.querySelector('.img-upload__cancel');
 
-//upload.setAttribute('action', 'https://23.javascript.pages.academy/kekstagram');
-///upload.setAttribute('method', 'POST');
-//upload.setAttribute('enctype', 'multipart/form-data');
+upload.setAttribute('action', 'https://23.javascript.pages.academy/kekstagram');
+upload.setAttribute('method', 'POST');
+upload.setAttribute('enctype', 'multipart/form-data');
 file.setAttribute('accept', VALID_FILE_FORMAT.join(','));
 
 function fileChangeHandler (event) {
   const image = event.target.files[0];
-  const closeButton = document.querySelector('.img-upload__cancel');
   const reader = new FileReader();
   const imgSize = document.querySelector('.scale__control--value');
   const smallerBtn = document.querySelector('.scale__control--smaller');
@@ -30,6 +30,12 @@ function fileChangeHandler (event) {
   const effectValueElement = document.querySelector('.effect-level__value');
   const fieldset = document.querySelector('.img-upload__effect-level');
   let currentEffect = 'effects__preview--none';
+
+  function setDefaultEffect () {
+    preview.classList.remove(currentEffect);
+    currentEffect = 'effects__preview--none';
+    preview.classList.add(currentEffect);
+  }
 
   function smallerBtnClickHandler () {
     switch (imgSize.value) {
@@ -67,6 +73,9 @@ function fileChangeHandler (event) {
 
   function setNoUiSliderOptions (option) {
     switch(option) {
+      case 'effects__preview--none':
+        setDefaultEffect();
+        break;
       case 'effects__preview--chrome':
       case 'effects__preview--sepia':
         sliderElement.noUiSlider.updateOptions({
@@ -79,6 +88,7 @@ function fileChangeHandler (event) {
         });
         break;
       case 'effects__preview--heat':
+      case 'effects__preview--phobos':
         sliderElement.noUiSlider.updateOptions({
           range: {
             min: 0,
@@ -96,16 +106,6 @@ function fileChangeHandler (event) {
           },
           step: 1,
           start: 100,
-        });
-        break;
-      case 'effects__preview--phobos':
-        sliderElement.noUiSlider.updateOptions({
-          range: {
-            min: 0,
-            max: 3,
-          },
-          step: 0.1,
-          start: 3,
         });
         break;
     }
@@ -152,18 +152,13 @@ function fileChangeHandler (event) {
     });
   }
 
-  function setDefaultEffect () {
-    preview.classList.remove(currentEffect);
-    currentEffect = 'effects__preview--none';
-    preview.classList.add(currentEffect);
-  }
-
-  function reset () {
+  function reset (callback) {
+    upload.reset();
     file.value = null;
-    smallerBtn.removeEventListener('click', smallerBtnClickHandler);
-    biggerBtn.removeEventListener('click', biggerBtnClickHandler);
+    deleteEventListener(smallerBtn, 'click', smallerBtnClickHandler );
+    deleteEventListener(biggerBtn, 'click', biggerBtnClickHandler);
     effects.forEach((effect) => {
-      effect.removeEventListener('click', effectClickHandler);
+      deleteEventListener(effect, 'click', effectClickHandler);
     });
     setDefaultEffect();
     fieldset.classList.remove('hidden');
@@ -171,7 +166,53 @@ function fileChangeHandler (event) {
       sliderElement.noUiSlider.destroy();
     }
     preview.style.filter = null;
-    //form.reset();
+    if(callback) {
+      callback();
+    }
+  }
+
+  function submitClickHandler (evt) {
+    evt.preventDefault();
+
+    function onSuccess () {
+      const body = document.querySelector('body');
+      const successElement = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
+      const lastNode = document.querySelector('#messages');
+      const coolBtn = successElement.querySelector('.success__button');
+      //const successInner = successElement.querySelector('.success__inner');
+
+      function removeSuccessEl () {
+        if(body.hasChildNodes(successElement)) {
+          //body.removeChild(successElement);
+        }
+      }
+
+      function resetWrapp () {
+        reset(removeSuccessEl);
+      }
+      /* function coolBtnClickHandler () {
+        body.removeChild(successElement);
+        body.classList.remove('modal-open');
+      }
+
+      function successElementClickHandler (ev) {
+        ev.stopPropagation();
+        body.removeChild(successElement);
+        body.classList.remove('modal-open');
+      } */
+
+      form.classList.add('hidden');
+      //body.classList.remove('modal-open');
+      reset();
+      closePopup(coolBtn, successElement, resetWrapp);
+      body.appendChild(successElement, lastNode.nextSibling);
+      //successElement.addEventListener('click', successElementClickHandler);
+      //successInner.addEventListener('click', (e) => e.stopPropagation());
+      //coolBtn.addEventListener('click', coolBtnClickHandler);
+    }
+
+    const formData = new FormData(upload);
+    sendData(formData, onSuccess);
   }
 
   openPopup(form);
@@ -199,13 +240,9 @@ function fileChangeHandler (event) {
   });
   smallerBtn.addEventListener('click', smallerBtnClickHandler);
   biggerBtn.addEventListener('click', biggerBtnClickHandler);
-  closePopup(closeButton, form, reset);
-}
-
-function submitClickHandler (evt) {
-  evt.preventDefault();
-  sendData(formData.append('file', form));
+  submit.addEventListener('click', submitClickHandler);
+  closePopup(cancelButton, form, reset);
 }
 
 file.addEventListener('change', fileChangeHandler);
-submit.addEventListener('click', submitClickHandler);
+

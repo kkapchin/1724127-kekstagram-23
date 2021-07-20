@@ -31,25 +31,29 @@
 async function getData () {
   const response = await fetch('https://23.javascript.pages.academy/kekstagram/data');
 
-  if(!response) {
+  if(!response.ok) {
     throw new Error(`Error ${'https://23.javascript.pages.academy/kekstagram/data'}, status ${response.status}`);
   }
 
   return await response.json();
 }
 
-async function sendData (data) {
-  const response = await fetch(
+async function sendData (data, onSuccess) {
+  //const response = await
+  fetch(
     'https://23.javascript.pages.academy/kekstagram',
     {
       method: 'POST',
       body: data,
-    });
+    })
+    .then(() => onSuccess());
 
-  if(!response) {
+  /* if(!response.ok) {
     throw new Error(`Error ${'https://23.javascript.pages.academy/kekstagram/data'}, status ${response.status}`);
   }
-  return await response.json();
+  onSuccess(); */
+  //await response;
+  //return await response.json();
 }
 
 export {
