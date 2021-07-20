@@ -1,5 +1,6 @@
 import { getData } from './connection.js';
 import { closePopup } from './utils/close-popup.js';
+import { isEscEvent } from './utils/is-escape-event.js';
 import { makeCounter } from './utils/make-counter.js';
 import { openPopup } from './utils/open-popup.js';
 
@@ -36,22 +37,23 @@ data.then((photos) => {
     }
   }
 
-  function pictureClickHandler (evt) {
-    evt.preventDefault();
-    const picId = evt.target.attributes.pic_id.value;
+  function pictureClickHandler (event) {
+    event.preventDefault();
+    const picId = event.target.attributes.pic_id.value;
     const currentPic = photos[picId];
     const comments = currentPic.comments;
     const img = document.querySelector('.big-picture__img').children[0];
-    const closeButton = document.querySelector('.big-picture__cancel');
+    const cancelButton = document.querySelector('.big-picture__cancel');
     const description = bigPicture.querySelector('.social__caption');
     const likes = bigPicture.querySelector('.likes-count');
     const commentsFragment = document.createDocumentFragment();
     const commentsTotal = commentCount.querySelector('.comments-count');
+    const body = document.querySelector('body');
 
     loadMoreBtn.classList.add('hidden');
     clearCommentsContainer();
     openPopup(bigPicture);
-    img.src = evt.target.currentSrc;
+    img.src = event.target.currentSrc;
     description.textContent = currentPic.description;
     likes.textContent = currentPic.likes;
 
@@ -75,7 +77,25 @@ data.then((photos) => {
       loadMoreBtn.classList.remove('hidden');
       loadMoreBtn.addEventListener('click', loadMoreBtnHandler);
     }
-    closePopup(closeButton, bigPicture, clearCommentsContainer);
+    closePopup(cancelButton, bigPicture, clearCommentsContainer);
+
+    function documentEscKeydownHandler (evt) {
+      if (isEscEvent(evt)) {
+        evt.preventDefault();
+        bigPicture.classList.add('hidden');
+        body.classList.remove('modal-open');
+        clearCommentsContainer();
+      }
+    }
+
+    function cancelButtonClickHandler () {
+      bigPicture.classList.add('hidden');
+      body.classList.remove('modal-open');
+      clearCommentsContainer();
+    }
+
+    cancelButton.addEventListener('click', cancelButtonClickHandler);
+    document.addEventListener('keydown', documentEscKeydownHandler);
   }
 
   pictures.forEach((picture) => {
