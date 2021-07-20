@@ -155,19 +155,31 @@ function fileChangeHandler (event) {
 
   function submitClickHandler (evt) {
     evt.preventDefault();
+    const body = document.querySelector('body');
+    const lastNode = document.querySelector('#messages');
+    const cancelButtonClone = cancelButton.cloneNode(true);
+    const successElement = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
+
     function onSuccess () {
-      const body = document.querySelector('body');
-      const successElement = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
-      const lastNode = document.querySelector('#messages');
       const coolBtn = successElement.querySelector('.success__button');
       const coolBtnClone = coolBtn.cloneNode(true);
       const successInner = successElement.querySelector('.success__inner');
-      const cancelButtonClone = cancelButton.cloneNode(true);
+
+      function documentEscKeydownHandler (ev) {
+        if(isEscEvent(ev)) {
+          ev.preventDefault();
+          body.classList.remove('modal-open');
+          coolBtn.replaceWith(coolBtnClone);
+          body.removeChild(successElement);
+          deleteEventListener(document, 'keydown', documentEscKeydownHandler);
+        }
+      }
 
       function coolBtnClickHandler () {
         body.classList.remove('modal-open');
         coolBtn.replaceWith(coolBtnClone);
         body.removeChild(successElement);
+        deleteEventListener(document, 'keydown', documentEscKeydownHandler);
       }
 
       function successElementClickHandler (ev) {
@@ -175,17 +187,9 @@ function fileChangeHandler (event) {
         body.classList.remove('modal-open');
         coolBtn.replaceWith(coolBtnClone);
         body.removeChild(successElement);
+        deleteEventListener(document, 'keydown', documentEscKeydownHandler);
       }
 
-      function documentKeydownHandler (ev) {
-        if(isEscEvent(ev)) {
-          ev.preventDefault();
-          body.classList.remove('modal-open');
-          coolBtn.replaceWith(coolBtnClone);
-          body.removeChild(successElement);
-          deleteEventListener(document, 'keydown', documentKeydownHandler);
-        }
-      }
       form.classList.add('hidden');
       upload.reset();
       file.value = null;
@@ -205,12 +209,66 @@ function fileChangeHandler (event) {
       body.appendChild(successElement, lastNode.nextSibling);
       successElement.addEventListener('click', successElementClickHandler);
       successInner.addEventListener('click', (e) => e.stopPropagation());
-      document.addEventListener('keydown', documentKeydownHandler);
+      document.addEventListener('keydown', documentEscKeydownHandler);
       coolBtn.addEventListener('click', coolBtnClickHandler);
     }
 
+    function onFail () {
+      const errorElement = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
+      const errorBtn = errorElement.querySelector('.error__button');
+      const errorBtnClone = errorBtn.cloneNode(true);
+      const errorInner = errorElement.querySelector('.error__inner');
+
+      function documentEscKeydownHandler (ev) {
+        if(isEscEvent(ev)) {
+          ev.preventDefault();
+          body.classList.remove('modal-open');
+          errorBtn.replaceWith(errorBtnClone);
+          body.removeChild(errorElement);
+          deleteEventListener(document, 'keydown', documentEscKeydownHandler);
+        }
+      }
+
+      function errorBtnClickHandler () {
+        body.classList.remove('modal-open');
+        errorBtn.replaceWith(errorBtnClone);
+        body.removeChild(errorElement);
+        deleteEventListener(document, 'keydown', documentEscKeydownHandler);
+      }
+
+      function errorElementClickHandler (ev) {
+        ev.stopPropagation();
+        body.classList.remove('modal-open');
+        errorBtn.replaceWith(errorBtnClone);
+        body.removeChild(errorElement);
+        deleteEventListener(document, 'keydown', documentEscKeydownHandler);
+      }
+
+      form.classList.add('hidden');
+      upload.reset();
+      file.value = null;
+      cancelButton.replaceWith(cancelButtonClone);
+      deleteEventListener(smallerBtn, 'click', smallerBtnClickHandler );
+      deleteEventListener(biggerBtn, 'click', biggerBtnClickHandler);
+      deleteEventListener(submit, 'click', submitClickHandler);
+      effects.forEach((effect) => {
+        deleteEventListener(effect, 'click', effectClickHandler);
+      });
+      setDefaultEffect();
+      fieldset.classList.remove('hidden');
+      if(sliderElement.noUiSlider) {
+        sliderElement.noUiSlider.destroy();
+      }
+      preview.style.filter = null;
+      body.appendChild(errorElement, lastNode.nextSibling);
+      errorElement.addEventListener('click', errorElementClickHandler);
+      errorInner.addEventListener('click', (e) => e.stopPropagation());
+      document.addEventListener('keydown', documentEscKeydownHandler);
+      errorBtn.addEventListener('click', errorBtnClickHandler);
+    }
+
     const formData = new FormData(upload);
-    sendData(formData, onSuccess);
+    sendData(formData, onSuccess, onFail);
   }
 
   function reset () {
@@ -260,4 +318,3 @@ function fileChangeHandler (event) {
 }
 
 file.addEventListener('change', fileChangeHandler);
-
