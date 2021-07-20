@@ -1,9 +1,11 @@
-import { getPhotos } from './connection.js';
+import { getData } from './connection.js';
 import { closePopup } from './utils/close-popup.js';
 import { makeCounter } from './utils/make-counter.js';
 import { openPopup } from './utils/open-popup.js';
 
-function renderFullPicture (photos) {
+const data = getData();
+
+data.then((photos) => {
   const bigPicture = document.querySelector('.big-picture');
   const pictures = document.querySelectorAll('.picture__img');
   const commentsContainer = document.querySelector('.social__comments');
@@ -79,8 +81,4 @@ function renderFullPicture (photos) {
   pictures.forEach((picture) => {
     picture.addEventListener('click', pictureClickHandler);
   });
-}
-
-getPhotos((photos) => {
-  renderFullPicture(photos);
 });

@@ -1,21 +1,17 @@
-const url = 'https://23.javascript.pages.academy/kekstagram/data';
-
-function getPhotos (onSuccess) {
-  fetch(url)
+/* function getPhotos (onSuccess) {
+  fetch(dataUrl)
     .then((response) => response.json())
     .then((photos) => {
       onSuccess(photos);
     });
-}
+} */
 
-function sendPhoto (body, onSuccess, onFail) {
+/* function sendPhoto (onSuccess, onFail, body) {
   fetch(
     'https://23.javascript.pages.academy/kekstagram',
     {
       method: 'POST',
       headers: {
-        /* 'Content-Type': 'multipart/form-data',
-        'Access-Control-Allow-Origin': '*', */
       },
       body,
     },
@@ -30,9 +26,17 @@ function sendPhoto (body, onSuccess, onFail) {
     .catch(() => {
       onFail('Не удалось отправить форму. Попробуйте ещё раз');
     });
+} */
+
+async function getData () {
+  const response = await fetch('https://23.javascript.pages.academy/kekstagram/data');
+  if(!response) {
+    throw new Error(`Error ${'https://23.javascript.pages.academy/kekstagram/data'}, status ${response.status}`);
+  }
+  return await response.json();
 }
 
 export {
-  getPhotos,
-  sendPhoto
+  getData
+  //sendData,
 };
