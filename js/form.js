@@ -1,11 +1,12 @@
+import './hashtags-validation.js';
+import './comments-validation.js';
 import { VALID_FILE_FORMAT } from './data.js';
 import { closePopup } from './utils/close-popup.js';
 import { openPopup } from './utils/open-popup.js';
-import './hashtags-validation.js';
-import './comments-validation.js';
 import { sendData } from './connection.js';
 import { deleteEventListener } from './utils/delete-event-listener.js';
 import { isEscEvent } from './utils/is-escape-event.js';
+//import _ from 'lodash.debounce';
 
 const upload = document.querySelector('.img-upload__form');
 const file = document.querySelector('#upload-file');
@@ -117,7 +118,7 @@ function fileChangeHandler (event) {
     currentEffect = `effects__preview--${evt.target.value}`;
     preview.classList.add(currentEffect);
     setNoUiSliderOptions(currentEffect);
-    sliderElement.noUiSlider.on('update', (_, handle, unencoded) => {
+    sliderElement.noUiSlider.on('update', ($, handle, unencoded) => {
       switch(evt.target.value) {
         case 'none':
           fieldset.classList.add('hidden');

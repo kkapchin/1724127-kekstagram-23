@@ -1,10 +1,9 @@
-async function getData (onFail) {
+async function getData (onSuccess, onFail) {
 
-  const response = await fetch('https://23.javascript.pages.academy/kekstagram/data');
-  if(!response.ok) {
-    onFail();
-  }
-  return await response.json();
+  fetch('https://23.javascript.pages.academy/kekstagram/data')
+    .then((response) => response.json())
+    .then((pictures) => onSuccess(pictures))
+    .catch(() => onFail());
 }
 
 async function sendData (data, onSuccess, onFail) {
@@ -23,6 +22,7 @@ async function sendData (data, onSuccess, onFail) {
   })
     .catch(() => onFail());
 }
+
 export {
   getData,
   sendData
