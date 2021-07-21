@@ -1,4 +1,3 @@
-import './render-random-pictures.js';
-import './render-fullscreen-picture.js';
+import './render-gallery.js';
 import './form.js';
 import './connection.js';

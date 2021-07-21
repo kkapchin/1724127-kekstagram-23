@@ -1,10 +1,14 @@
 import { getData } from './connection.js';
+import { renderFullscreenPicture } from './render-fullscreen-picture.js';
 import { deleteEventListener } from './utils/delete-event-listener.js';
+import { getRandomPositiveInteger } from './utils/get-random-positive-integer.js';
 import { isEscEvent } from './utils/is-escape-event.js';
 
 const picturesContainer = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 const randomPicturesFragment = document.createDocumentFragment();
+const defaultData = [];
+const randomData = [];
 
 function onFail () {
   const body = document.querySelector('body');
@@ -57,22 +61,94 @@ function onFail () {
   errorBtn.addEventListener('click', errorBtnClickHandler);
 }
 
-function renderRandomPictures (pictures) {
-  pictures.forEach(({id, url, description, likes, comments}) => {
+function renderGallery (data) {
+  let index = 0;
+  data.forEach(({url, description, likes, comments}) => {
     const pictureElement = pictureTemplate.cloneNode(true);
     pictureElement.querySelector('.picture__img').src = url;
-    pictureElement.querySelector('.picture__img').setAttribute('pic_id', id);
+    pictureElement.querySelector('.picture__img').setAttribute('index', index);
     pictureElement.querySelector('.picture__img').alt = description;
     pictureElement.querySelector('.picture__likes').textContent = likes;
     pictureElement.querySelector('.picture__comments').textContent = comments.length;
     randomPicturesFragment.appendChild(pictureElement);
+    index++;
   });
   picturesContainer.appendChild(randomPicturesFragment);
   document.querySelector('.pictures__title')
     .classList
     .remove('visually-hidden');
+  //renderFullscreenPicture(data);
 }
 
-getData(renderRandomPictures, onFail);
+function createDefaultData (array, data) {
+  data.forEach((item) => {
+    array.push(item);
+  });
+}
 
-export { onFail };
+function createRandomData (randomizer, array, source) {
+  for (array.length; array.length < 10;) {
+    const randomItem = source[randomizer(0, 24)];
+    if(!array.includes(randomItem)) {
+      array.push(randomItem);
+    }
+  }
+}
+
+function showFilters () {
+  const filtersElement = document.querySelector('.img-filters');
+  const defaultFilter = filtersElement.querySelector('#filter-default');
+  const randomFilter = filtersElement.querySelector('#filter-random');
+  const discussedFilter = filtersElement.querySelector('#filter-discussed');
+
+
+  createRandomData(getRandomPositiveInteger, randomData, defaultData);
+
+  function clearGallery () {
+    const pictures = picturesContainer.querySelectorAll('.picture');
+    for (let i = 0; i < pictures.length; i++) {
+      const child = picturesContainer.lastElementChild;
+      picturesContainer.removeChild(child);
+    }
+  }
+
+  function setFilterActive (filter) {
+    defaultFilter.classList.remove('img-filters__button--active');
+    randomFilter.classList.remove('img-filters__button--active');
+    discussedFilter.classList.remove('img-filters__button--active');
+    filter.classList.add('img-filters__button--active');
+  }
+
+  function defaultFilterClickHandler () {
+    setFilterActive(defaultFilter);
+    clearGallery();
+    renderGallery(defaultData);
+    renderFullscreenPicture(defaultData);
+  }
+
+  function randomFilterClickHandler () {
+    setFilterActive(randomFilter);
+    clearGallery();
+    renderGallery(randomData);
+    renderFullscreenPicture(randomData);
+  }
+
+  function discussedFilterClickHandler () {
+    setFilterActive(discussedFilter);
+  }
+
+  filtersElement.classList.remove('img-filters--inactive');
+  defaultFilter.addEventListener('click', defaultFilterClickHandler);
+  randomFilter.addEventListener('click', randomFilterClickHandler);
+  discussedFilter.addEventListener('click', discussedFilterClickHandler);
+}
+
+function onSuccess (pictures) {
+  createDefaultData(defaultData, pictures);
+  renderGallery(defaultData);
+  renderFullscreenPicture(defaultData);
+  showFilters();
+}
+getData(onSuccess, onFail);
+
+//export { onFail, data };
