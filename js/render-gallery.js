@@ -1,5 +1,7 @@
 import { getData } from './connection.js';
+import { RERENDER_DELAY } from './data.js';
 import { renderFullscreenPicture } from './render-fullscreen-picture.js';
+import { debounce } from './utils/debounce.js';
 import { deleteEventListener } from './utils/delete-event-listener.js';
 import { getRandomPositiveInteger } from './utils/get-random-positive-integer.js';
 import { isEscEvent } from './utils/is-escape-event.js';
@@ -124,6 +126,9 @@ function showFilters () {
   }
 
   function defaultFilterClickHandler () {
+    debounce(() => {
+      defaultFilterClickHandler();
+    });
     setFilterActive(defaultFilter);
     clearGallery();
     renderGallery(defaultData);
@@ -131,6 +136,9 @@ function showFilters () {
   }
 
   function randomFilterClickHandler () {
+    debounce(() => {
+      randomFilterClickHandler();
+    });
     setFilterActive(randomFilter);
     clearGallery();
     renderGallery(randomData);
@@ -138,6 +146,9 @@ function showFilters () {
   }
 
   function discussedFilterClickHandler () {
+    debounce(() => {
+      discussedFilterClickHandler();
+    });
     setFilterActive(discussedFilter);
     clearGallery();
     renderGallery(discussedData);
