@@ -1,10 +1,9 @@
-async function getData () {
+async function getData (onFail) {
+
   const response = await fetch('https://23.javascript.pages.academy/kekstagram/data');
-
   if(!response.ok) {
-    throw new Error(`Error ${'https://23.javascript.pages.academy/kekstagram/data'}, status ${response.status}`);
+    onFail();
   }
-
   return await response.json();
 }
 

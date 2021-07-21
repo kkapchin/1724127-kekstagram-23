@@ -158,9 +158,9 @@ function fileChangeHandler (event) {
     const body = document.querySelector('body');
     const lastNode = document.querySelector('#messages');
     const cancelButtonClone = cancelButton.cloneNode(true);
-    const successElement = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
 
     function onSuccess () {
+      const successElement = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
       const coolBtn = successElement.querySelector('.success__button');
       const coolBtnClone = coolBtn.cloneNode(true);
       const successInner = successElement.querySelector('.success__inner');
