@@ -126,27 +126,24 @@ function showFilters () {
   }
 
   function defaultFilterClickHandler () {
-    debounce(() => {
-      setFilterActive(defaultFilter);
-    }, RERENDER_DELAY);
+    debounce(defaultFilterClickHandler, RERENDER_DELAY);
+    setFilterActive(defaultFilter);
     clearGallery();
     renderGallery(defaultData);
     renderFullscreenPicture(defaultData);
   }
 
   function randomFilterClickHandler () {
-    debounce(() => {
-      setFilterActive(randomFilter);
-    }, RERENDER_DELAY);
+    debounce(randomFilterClickHandler, RERENDER_DELAY);
+    setFilterActive(randomFilter);
     clearGallery();
     renderGallery(randomData);
     renderFullscreenPicture(randomData);
   }
 
   function discussedFilterClickHandler () {
-    debounce(() => {
-      setFilterActive(discussedFilter);
-    }, RERENDER_DELAY);
+    debounce(discussedFilterClickHandler, RERENDER_DELAY);
+    setFilterActive(discussedFilter);
     clearGallery();
     renderGallery(discussedData);
     renderFullscreenPicture(discussedData);
