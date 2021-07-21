@@ -1,5 +1,4 @@
 import { getData } from './connection.js';
-import { RERENDER_DELAY } from './data.js';
 import { renderFullscreenPicture } from './render-fullscreen-picture.js';
 import { debounce } from './utils/debounce.js';
 import { deleteEventListener } from './utils/delete-event-listener.js';
