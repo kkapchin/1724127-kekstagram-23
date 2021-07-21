@@ -37,10 +37,13 @@ const NAMES = [
 
 const VALID_FILE_FORMAT = ['.png', '.jpg', '.jpeg', '.gif'];
 
+const RERENDER_DELAY = 500;
+
 export {
   DESCRIPTIONS,
   COMMENTS,
   NAMES,
   RANDOM_PICTURES_COUNT,
-  VALID_FILE_FORMAT
+  VALID_FILE_FORMAT,
+  RERENDER_DELAY
 };
