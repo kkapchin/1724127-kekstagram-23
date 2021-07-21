@@ -1,4 +1,5 @@
 import { getData } from './connection.js';
+import { RERENDER_DELAY } from './data.js';
 import { renderFullscreenPicture } from './render-fullscreen-picture.js';
 import { deleteEventListener } from './utils/delete-event-listener.js';
 import { getRandomPositiveInteger } from './utils/get-random-positive-integer.js';
@@ -124,21 +125,27 @@ function showFilters () {
   }
 
   function defaultFilterClickHandler () {
-    setFilterActive(defaultFilter);
+    debounce(() => {
+      setFilterActive(defaultFilter);
+    }, RERENDER_DELAY);
     clearGallery();
     renderGallery(defaultData);
     renderFullscreenPicture(defaultData);
   }
 
   function randomFilterClickHandler () {
-    setFilterActive(randomFilter);
+    debounce(() => {
+      setFilterActive(randomFilter);
+    }, RERENDER_DELAY);
     clearGallery();
     renderGallery(randomData);
     renderFullscreenPicture(randomData);
   }
 
   function discussedFilterClickHandler () {
-    setFilterActive(discussedFilter);
+    debounce(() => {
+      setFilterActive(discussedFilter);
+    }, RERENDER_DELAY);
     clearGallery();
     renderGallery(discussedData);
     renderFullscreenPicture(discussedData);
