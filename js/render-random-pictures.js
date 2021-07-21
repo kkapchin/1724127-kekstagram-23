@@ -57,9 +57,7 @@ function onFail () {
   errorBtn.addEventListener('click', errorBtnClickHandler);
 }
 
-const data = getData(onFail);
-
-data.then((pictures) => {
+function renderRandomPictures (pictures) {
   pictures.forEach(({id, url, description, likes, comments}) => {
     const pictureElement = pictureTemplate.cloneNode(true);
     pictureElement.querySelector('.picture__img').src = url;
@@ -73,4 +71,8 @@ data.then((pictures) => {
   document.querySelector('.pictures__title')
     .classList
     .remove('visually-hidden');
-});
+}
+
+getData(renderRandomPictures, onFail);
+
+export { onFail };

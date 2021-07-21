@@ -1,12 +1,11 @@
 import { getData } from './connection.js';
+import { onFail } from './render-random-pictures.js';
 import { closePopup } from './utils/close-popup.js';
 import { isEscEvent } from './utils/is-escape-event.js';
 import { makeCounter } from './utils/make-counter.js';
 import { openPopup } from './utils/open-popup.js';
 
-const data = getData();
-
-data.then((photos) => {
+function renderFullscreenPicture (photos) {
   const bigPicture = document.querySelector('.big-picture');
   const pictures = document.querySelectorAll('.picture__img');
   const commentsContainer = document.querySelector('.social__comments');
@@ -101,4 +100,6 @@ data.then((photos) => {
   pictures.forEach((picture) => {
     picture.addEventListener('click', pictureClickHandler);
   });
-});
+}
+
+getData(renderFullscreenPicture, onFail);
