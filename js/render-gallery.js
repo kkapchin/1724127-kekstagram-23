@@ -9,6 +9,7 @@ const pictureTemplate = document.querySelector('#picture').content.querySelector
 const randomPicturesFragment = document.createDocumentFragment();
 const defaultData = [];
 const randomData = [];
+const discussedData = [];
 
 function onFail () {
   const body = document.querySelector('body');
@@ -77,7 +78,6 @@ function renderGallery (data) {
   document.querySelector('.pictures__title')
     .classList
     .remove('visually-hidden');
-  //renderFullscreenPicture(data);
 }
 
 function createDefaultData (array, data) {
@@ -95,14 +95,18 @@ function createRandomData (randomizer, array, source) {
   }
 }
 
+function createDiscussedData (array, data) {
+  data
+    .slice()
+    .sort((a, b) => b.comments.length - a.comments.length)
+    .forEach((item) => array.push(item));
+}
+
 function showFilters () {
   const filtersElement = document.querySelector('.img-filters');
   const defaultFilter = filtersElement.querySelector('#filter-default');
   const randomFilter = filtersElement.querySelector('#filter-random');
   const discussedFilter = filtersElement.querySelector('#filter-discussed');
-
-
-  createRandomData(getRandomPositiveInteger, randomData, defaultData);
 
   function clearGallery () {
     const pictures = picturesContainer.querySelectorAll('.picture');
@@ -135,8 +139,13 @@ function showFilters () {
 
   function discussedFilterClickHandler () {
     setFilterActive(discussedFilter);
+    clearGallery();
+    renderGallery(discussedData);
+    renderFullscreenPicture(discussedData);
   }
 
+  createRandomData(getRandomPositiveInteger, randomData, defaultData);
+  createDiscussedData(discussedData, defaultData);
   filtersElement.classList.remove('img-filters--inactive');
   defaultFilter.addEventListener('click', defaultFilterClickHandler);
   randomFilter.addEventListener('click', randomFilterClickHandler);
@@ -150,5 +159,3 @@ function onSuccess (pictures) {
   showFilters();
 }
 getData(onSuccess, onFail);
-
-//export { onFail, data };

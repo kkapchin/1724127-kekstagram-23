@@ -1,8 +1,8 @@
+import './hashtags-validation.js';
+import './comments-validation.js';
 import { VALID_FILE_FORMAT } from './data.js';
 import { closePopup } from './utils/close-popup.js';
 import { openPopup } from './utils/open-popup.js';
-import './hashtags-validation.js';
-import './comments-validation.js';
 import { sendData } from './connection.js';
 import { deleteEventListener } from './utils/delete-event-listener.js';
 import { isEscEvent } from './utils/is-escape-event.js';
