@@ -1,12 +1,12 @@
-async function getData (onSuccess, onFail) {
+async function getData (success, fail) {
 
   fetch('https://23.javascript.pages.academy/kekstagram/data')
     .then((response) => response.json())
-    .then((pictures) => onSuccess(pictures))
-    .catch(() => onFail());
+    .then((data) => success(data))
+    .catch(() => fail());
 }
 
-async function sendData (data, onSuccess, onFail) {
+async function sendData (data, success, fail) {
   fetch(
     'https://23.javascript.pages.academy/kekstagram',
     {
@@ -15,12 +15,12 @@ async function sendData (data, onSuccess, onFail) {
     },
   ).then((response) => {
     if(response.ok) {
-      onSuccess();
+      success();
     } else {
-      onFail();
+      fail();
     }
   })
-    .catch(() => onFail());
+    .catch(() => fail());
 }
 
 export {

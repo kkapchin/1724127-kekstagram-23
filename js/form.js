@@ -1,36 +1,35 @@
 import './hashtags-validation.js';
 import './comments-validation.js';
-import { VALID_FILE_FORMAT } from './data.js';
 import { closePopup } from './utils/close-popup.js';
 import { openPopup } from './utils/open-popup.js';
 import { sendData } from './connection.js';
 import { deleteEventListener } from './utils/delete-event-listener.js';
 import { isEscEvent } from './utils/is-escape-event.js';
-//import _ from 'lodash.debounce';
+import { VALID_FILE_TYPES } from './data.js';
 
-const upload = document.querySelector('.img-upload__form');
+const form = document.querySelector('.img-upload__form');
 const file = document.querySelector('#upload-file');
-const form = document.querySelector('.img-upload__overlay');
+const overlay = document.querySelector('.img-upload__overlay');
 const preview = document.querySelector('.img-upload__preview');
 
-upload.setAttribute('action', 'https://23.javascript.pages.academy/kekstagram');
-upload.setAttribute('method', 'POST');
-upload.setAttribute('enctype', 'multipart/form-data');
-file.setAttribute('accept', VALID_FILE_FORMAT.join(','));
+form.setAttribute('action', 'https://23.javascript.pages.academy/kekstagram');
+form.setAttribute('method', 'POST');
+form.setAttribute('enctype', 'multipart/form-data');
+file.setAttribute('accept', VALID_FILE_TYPES.join(','));
 
 function fileChangeHandler (event) {
   const image = event.target.files[0];
   const reader = new FileReader();
   const imgSize = document.querySelector('.scale__control--value');
-  const smallerBtn = document.querySelector('.scale__control--smaller');
-  const biggerBtn = document.querySelector('.scale__control--bigger');
-  const effectsPreviews = document.querySelectorAll('.effects__preview');
-  const effects = document.querySelectorAll('.effects__radio');
+  const decreaseButton = document.querySelector('.scale__control--smaller');
+  const increaseButton = document.querySelector('.scale__control--bigger');
+  const effectPreview = document.querySelectorAll('.effects__preview');
+  const frame = document.querySelectorAll('.effects__radio');
   const sliderElement = document.querySelector('.effect-level__slider');
   const effectValueElement = document.querySelector('.effect-level__value');
   const fieldset = document.querySelector('.img-upload__effect-level');
   const cancelButton = document.querySelector('.img-upload__cancel');
-  const submit = document.querySelector('#upload-submit');
+  const submitButton = document.querySelector('#upload-submit');
   let currentEffect = 'effects__preview--none';
 
   function setDefaultEffect () {
@@ -90,6 +89,15 @@ function fileChangeHandler (event) {
         });
         break;
       case 'effects__preview--heat':
+        sliderElement.noUiSlider.updateOptions({
+          range: {
+            min: 1,
+            max: 3,
+          },
+          step: 0.1,
+          start: 3,
+        });
+        break;
       case 'effects__preview--phobos':
         sliderElement.noUiSlider.updateOptions({
           range: {
@@ -118,7 +126,7 @@ function fileChangeHandler (event) {
     currentEffect = `effects__preview--${evt.target.value}`;
     preview.classList.add(currentEffect);
     setNoUiSliderOptions(currentEffect);
-    sliderElement.noUiSlider.on('update', ($, handle, unencoded) => {
+    sliderElement.noUiSlider.on('update', (_, handle, unencoded) => {
       switch(evt.target.value) {
         case 'none':
           fieldset.classList.add('hidden');
@@ -162,15 +170,15 @@ function fileChangeHandler (event) {
 
     function onSuccess () {
       const successElement = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
-      const coolBtn = successElement.querySelector('.success__button');
-      const coolBtnClone = coolBtn.cloneNode(true);
+      const coolButton = successElement.querySelector('.success__button');
+      const coolButtonClone = coolButton.cloneNode(true);
       const successInner = successElement.querySelector('.success__inner');
 
       function documentEscKeydownHandler (ev) {
         if(isEscEvent(ev)) {
           ev.preventDefault();
           body.classList.remove('modal-open');
-          coolBtn.replaceWith(coolBtnClone);
+          coolButton.replaceWith(coolButtonClone);
           body.removeChild(successElement);
           deleteEventListener(document, 'keydown', documentEscKeydownHandler);
         }
@@ -178,7 +186,7 @@ function fileChangeHandler (event) {
 
       function coolBtnClickHandler () {
         body.classList.remove('modal-open');
-        coolBtn.replaceWith(coolBtnClone);
+        coolButton.replaceWith(coolButtonClone);
         body.removeChild(successElement);
         deleteEventListener(document, 'keydown', documentEscKeydownHandler);
       }
@@ -186,19 +194,19 @@ function fileChangeHandler (event) {
       function successElementClickHandler (ev) {
         ev.stopPropagation();
         body.classList.remove('modal-open');
-        coolBtn.replaceWith(coolBtnClone);
+        coolButton.replaceWith(coolButtonClone);
         body.removeChild(successElement);
         deleteEventListener(document, 'keydown', documentEscKeydownHandler);
       }
 
-      form.classList.add('hidden');
-      upload.reset();
+      overlay.classList.add('hidden');
+      form.reset();
       file.value = null;
       cancelButton.replaceWith(cancelButtonClone);
-      deleteEventListener(smallerBtn, 'click', smallerBtnClickHandler );
-      deleteEventListener(biggerBtn, 'click', biggerBtnClickHandler);
-      deleteEventListener(submit, 'click', submitClickHandler);
-      effects.forEach((effect) => {
+      deleteEventListener(decreaseButton, 'click', smallerBtnClickHandler );
+      deleteEventListener(increaseButton, 'click', biggerBtnClickHandler);
+      deleteEventListener(submitButton, 'click', submitClickHandler);
+      frame.forEach((effect) => {
         deleteEventListener(effect, 'click', effectClickHandler);
       });
       setDefaultEffect();
@@ -211,20 +219,20 @@ function fileChangeHandler (event) {
       successElement.addEventListener('click', successElementClickHandler);
       successInner.addEventListener('click', (e) => e.stopPropagation());
       document.addEventListener('keydown', documentEscKeydownHandler);
-      coolBtn.addEventListener('click', coolBtnClickHandler);
+      coolButton.addEventListener('click', coolBtnClickHandler);
     }
 
     function onFail () {
       const errorElement = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
-      const errorBtn = errorElement.querySelector('.error__button');
-      const errorBtnClone = errorBtn.cloneNode(true);
+      const errorButton = errorElement.querySelector('.error__button');
+      const errorButtonClone = errorButton.cloneNode(true);
       const errorInner = errorElement.querySelector('.error__inner');
 
       function documentEscKeydownHandler (ev) {
         if(isEscEvent(ev)) {
           ev.preventDefault();
           body.classList.remove('modal-open');
-          errorBtn.replaceWith(errorBtnClone);
+          errorButton.replaceWith(errorButtonClone);
           body.removeChild(errorElement);
           deleteEventListener(document, 'keydown', documentEscKeydownHandler);
         }
@@ -232,7 +240,7 @@ function fileChangeHandler (event) {
 
       function errorBtnClickHandler () {
         body.classList.remove('modal-open');
-        errorBtn.replaceWith(errorBtnClone);
+        errorButton.replaceWith(errorButtonClone);
         body.removeChild(errorElement);
         deleteEventListener(document, 'keydown', documentEscKeydownHandler);
       }
@@ -240,19 +248,19 @@ function fileChangeHandler (event) {
       function errorElementClickHandler (ev) {
         ev.stopPropagation();
         body.classList.remove('modal-open');
-        errorBtn.replaceWith(errorBtnClone);
+        errorButton.replaceWith(errorButtonClone);
         body.removeChild(errorElement);
         deleteEventListener(document, 'keydown', documentEscKeydownHandler);
       }
 
-      form.classList.add('hidden');
-      upload.reset();
+      overlay.classList.add('hidden');
+      form.reset();
       file.value = null;
       cancelButton.replaceWith(cancelButtonClone);
-      deleteEventListener(smallerBtn, 'click', smallerBtnClickHandler );
-      deleteEventListener(biggerBtn, 'click', biggerBtnClickHandler);
-      deleteEventListener(submit, 'click', submitClickHandler);
-      effects.forEach((effect) => {
+      deleteEventListener(decreaseButton, 'click', smallerBtnClickHandler );
+      deleteEventListener(increaseButton, 'click', biggerBtnClickHandler);
+      deleteEventListener(submitButton, 'click', submitClickHandler);
+      frame.forEach((effect) => {
         deleteEventListener(effect, 'click', effectClickHandler);
       });
       setDefaultEffect();
@@ -265,20 +273,20 @@ function fileChangeHandler (event) {
       errorElement.addEventListener('click', errorElementClickHandler);
       errorInner.addEventListener('click', (e) => e.stopPropagation());
       document.addEventListener('keydown', documentEscKeydownHandler);
-      errorBtn.addEventListener('click', errorBtnClickHandler);
+      errorButton.addEventListener('click', errorBtnClickHandler);
     }
 
-    const formData = new FormData(upload);
+    const formData = new FormData(form);
     sendData(formData, onSuccess, onFail);
   }
 
   function reset () {
-    upload.reset();
+    form.reset();
     file.value = null;
-    deleteEventListener(smallerBtn, 'click', smallerBtnClickHandler );
-    deleteEventListener(biggerBtn, 'click', biggerBtnClickHandler);
-    deleteEventListener(submit, 'click', submitClickHandler);
-    effects.forEach((effect) => {
+    deleteEventListener(decreaseButton, 'click', smallerBtnClickHandler );
+    deleteEventListener(increaseButton, 'click', biggerBtnClickHandler);
+    deleteEventListener(submitButton, 'click', submitClickHandler);
+    frame.forEach((effect) => {
       deleteEventListener(effect, 'click', effectClickHandler);
     });
     setDefaultEffect();
@@ -289,13 +297,13 @@ function fileChangeHandler (event) {
     preview.style.filter = null;
   }
 
-  openPopup(form);
+  openPopup(overlay);
   imgSize.value = '100%';
   preview.style.transform = 'scale(1)';
   fieldset.classList.add('hidden');
   reader.onload = () => {
     preview.children[0].src = reader.result;
-    effectsPreviews.forEach((background) => {
+    effectPreview.forEach((background) => {
       background.style.backgroundImage = `url(${reader.result})`;
     });
   };
@@ -309,13 +317,13 @@ function fileChangeHandler (event) {
     step: 10,
     connect: 'lower',
   });
-  effects.forEach((effect) => {
+  frame.forEach((effect) => {
     effect.addEventListener('click', effectClickHandler);
   });
-  smallerBtn.addEventListener('click', smallerBtnClickHandler);
-  biggerBtn.addEventListener('click', biggerBtnClickHandler);
-  submit.addEventListener('click', submitClickHandler);
-  closePopup(cancelButton, form, reset);
+  decreaseButton.addEventListener('click', smallerBtnClickHandler);
+  increaseButton.addEventListener('click', biggerBtnClickHandler);
+  submitButton.addEventListener('click', submitClickHandler);
+  closePopup(cancelButton, overlay, reset);
 }
 
 file.addEventListener('change', fileChangeHandler);

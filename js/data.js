@@ -1,8 +1,8 @@
-const VALID_FILE_FORMAT = ['.png', '.jpg', '.jpeg', '.gif'];
+const VALID_FILE_TYPES = ['.png', '.jpg', '.jpeg', '.gif'];
 
-const RERENDER_DELAY = 500;
+const DELAY = 500;
 
 export {
-  VALID_FILE_FORMAT,
-  RERENDER_DELAY
+  VALID_FILE_TYPES,
+  DELAY
 };

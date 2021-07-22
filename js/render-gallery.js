@@ -1,6 +1,6 @@
 import { getData } from './connection.js';
 import { renderFullscreenPicture } from './render-fullscreen-picture.js';
-import { RERENDER_DELAY } from './data.js';
+import { DELAY } from './data.js';
 import { debounce } from './utils/debounce.js';
 import { deleteEventListener } from './utils/delete-event-listener.js';
 import { getRandomPositiveInteger } from './utils/get-random-positive-integer.js';
@@ -82,26 +82,28 @@ function renderGallery (data) {
     .remove('visually-hidden');
 }
 
-function createDefaultData (array, data) {
+function createDefaultData (newData, data) {
   data.forEach((item) => {
-    array.push(item);
+    newData.push(item);
   });
 }
 
 function createRandomData (randomizer, array, source) {
   for (array.length; array.length < 10;) {
-    const randomItem = source[randomizer(0, 24)];
+    const MIN = 0;
+    const MAX = 24;
+    const randomItem = source[randomizer(MIN, MAX)];
     if(!array.includes(randomItem)) {
       array.push(randomItem);
     }
   }
 }
 
-function createDiscussedData (array, data) {
+function createDiscussedData (newData, data) {
   data
     .slice()
     .sort((a, b) => b.comments.length - a.comments.length)
-    .forEach((item) => array.push(item));
+    .forEach((item) => newData.push(item));
 }
 
 function showFilters () {
@@ -111,22 +113,26 @@ function showFilters () {
   const discussedFilter = filtersElement.querySelector('#filter-discussed');
 
   function clearGallery () {
-    const pictures = picturesContainer.querySelectorAll('.picture');
-    for (let i = 0; i < pictures.length; i++) {
+    const elements = picturesContainer.querySelectorAll('.picture');
+    elements.forEach(() => {
       const child = picturesContainer.lastElementChild;
       picturesContainer.removeChild(child);
-    }
+    });
   }
 
   function setFilterActive (filter) {
-    defaultFilter.classList.remove('img-filters__button--active');
-    randomFilter.classList.remove('img-filters__button--active');
-    discussedFilter.classList.remove('img-filters__button--active');
-    filter.classList.add('img-filters__button--active');
+    const filterClass = 'img-filters__button--active';
+    const elements = [defaultFilter, randomFilter, discussedFilter];
+    elements.forEach((element) => {
+      if(element.classList.contains(filterClass)) {
+        element.classList.remove(filterClass);
+      }
+    });
+    filter.classList.add(filterClass);
   }
 
   function defaultFilterClickHandler () {
-    debounce(defaultFilterClickHandler, RERENDER_DELAY);
+    debounce(defaultFilterClickHandler, DELAY);
     setFilterActive(defaultFilter);
     clearGallery();
     renderGallery(defaultData);
@@ -134,7 +140,7 @@ function showFilters () {
   }
 
   function randomFilterClickHandler () {
-    debounce(randomFilterClickHandler, RERENDER_DELAY);
+    debounce(randomFilterClickHandler, DELAY);
     setFilterActive(randomFilter);
     clearGallery();
     renderGallery(randomData);
@@ -142,7 +148,7 @@ function showFilters () {
   }
 
   function discussedFilterClickHandler () {
-    debounce(discussedFilterClickHandler, RERENDER_DELAY);
+    debounce(discussedFilterClickHandler, DELAY);
     setFilterActive(discussedFilter);
     clearGallery();
     renderGallery(discussedData);

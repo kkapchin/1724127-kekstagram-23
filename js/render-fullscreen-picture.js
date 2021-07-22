@@ -1,12 +1,10 @@
 import { closePopup } from './utils/close-popup.js';
-//import { deleteEventListener } from './utils/delete-event-listener.js';
-//import { isEscEvent } from './utils/is-escape-event.js';
 import { openPopup } from './utils/open-popup.js';
 
 
 function renderFullscreenPicture (data) {
-  const bigPicture = document.querySelector('.big-picture');
-  const imgElements = document.querySelectorAll('.picture__img');
+  const fullImg = document.querySelector('.big-picture');
+  const img = document.querySelectorAll('.picture__img');
   const commentCount = document.querySelector('.social__comment-count');
 
 
@@ -17,8 +15,8 @@ function renderFullscreenPicture (data) {
     const comments = picData.comments;
     const bigPictureImgElement = document.querySelector('.big-picture__img').children[0];
     const cancelButton = document.querySelector('.big-picture__cancel');
-    const description = bigPicture.querySelector('.social__caption');
-    const likesCount = bigPicture.querySelector('.likes-count');
+    const description = fullImg.querySelector('.social__caption');
+    const likesCount = fullImg.querySelector('.likes-count');
     const socialCommentCount = document.querySelector('.social__comment-count');
     const commentsCount = commentCount.querySelector('.comments-count');
     const commentsLoaderBtn = document.querySelector('.social__comments-loader');
@@ -45,9 +43,10 @@ function renderFullscreenPicture (data) {
       }
     }
     function revealComments () {
+      const LIMIT = 5;
       const socialComments = document.querySelector('.social__comments');
       const commentItems = socialComments.querySelectorAll('.true__comment.hidden');
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < LIMIT; i++) {
         if (commentItems[i]) {
           commentItems[i].classList.remove('hidden');
           commentItems[i].classList.add('revealed');
@@ -57,9 +56,9 @@ function renderFullscreenPicture (data) {
       setCommentsLoaderBtnStatus();
     }
 
-    function renderComments (commentsArray) {
+    function renderComments (commentaries) {
       const socialComments = document.querySelector('.social__comments');
-      commentsArray.forEach(({id, avatar, message}) => {
+      commentaries.forEach(({id, avatar, message}) => {
         const commentElement = socialComments.querySelector('.social__comment').cloneNode(true);
         const socialPicture = commentElement.querySelector('.social__picture');
         const socialText = commentElement.querySelector('.social__text');
@@ -92,7 +91,7 @@ function renderFullscreenPicture (data) {
       resetRevealedCommentsCount();
     }
 
-    openPopup(bigPicture);
+    openPopup(fullImg);
     setCommentsLoaderBtnStatus();
     bigPictureImgElement.src = event.target.currentSrc;
     description.textContent = picData.description;
@@ -100,10 +99,10 @@ function renderFullscreenPicture (data) {
     commentsCount.textContent = comments.length;
     renderComments(comments);
     commentsLoaderBtn.addEventListener('click', commentsLoaderBtnClickHandler);
-    closePopup(cancelButton, bigPicture, clearCommentsContainer);
+    closePopup(cancelButton, fullImg, clearCommentsContainer);
   }
 
-  imgElements.forEach((picture) => {
+  img.forEach((picture) => {
     picture.addEventListener('click', pictureClickHandler);
   });
 }

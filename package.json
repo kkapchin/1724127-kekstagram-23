@@ -12,12 +12,12 @@
   },
   "devDependencies": {
     "browser-sync": "2.26.14",
-    "eslint": "^7.18.0",
+    "eslint": "7.18.0",
     "eslint-config-htmlacademy": "4.0.1"
   },
   "license": "MIT",
   "dependencies": {
-    "lodash.debounce": "^4.0.8"
+    "lodash.debounce": "4.0.8"
   },
   "scripts": {
     "start": "browser-sync start --server --no-ui --files \"js/**/*.js\"",
