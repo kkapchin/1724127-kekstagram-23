@@ -10,8 +10,10 @@ function keydownHandler (evt) {
 }
 
 function keyupHandler () {
-  if(!checkStringLength(input.value, 140)) {
-    input.value = input.value.substring(0, 140);
+  const MIN = 0;
+  const MAX = 0;
+  if(!checkStringLength(input.value, MAX)) {
+    input.value = input.value.substring(MIN, MAX);
   }
 }
 

@@ -33,7 +33,8 @@ function keydownHandler (evt) {
 }
 
 function keyupHandler () {
-  const HASHTAG_LENGTH_LIMIT = 5;
+  const HASHTAGS_LIMIT = 5;
+  const HASHTAG_MAX_LENGTH = 20;
   const LETTERS_MIN = 0;
   const LETTERS_MAX = 19;
   const SYMBOLS_MIN = 0;
@@ -45,13 +46,13 @@ function keyupHandler () {
       hashtags[hashtags.length -1] = `#${currentHashtag.substring(LETTERS_MIN, LETTERS_MAX)}`;
       input.value = hashtags.join(' ');
     }
-    if(currentHashtag.length >= 20) {
+    if(currentHashtag.length >= HASHTAG_MAX_LENGTH) {
       hashtags[hashtags.length -1] = currentHashtag.substring(SYMBOLS_MIN, SYMBOLS_MAX);
       input.value = hashtags.join(' ');
       input.value += ' #';
     }
   }
-  if(hashtags.length > HASHTAG_LENGTH_LIMIT) {
+  if(hashtags.length > HASHTAGS_LIMIT) {
     hashtags.pop();
     input.value = hashtags.join(' ');
   }
