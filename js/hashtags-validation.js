@@ -5,9 +5,22 @@ const regHashtag = /^#[A-Za-zА-Яа-я0-9_]{1,19}$/;
 const regInput = /[A-Za-z0-9А-Яа-я #_]$/;
 const input = document.querySelector('.text__hashtags');
 
+function getUniqHashtags (hashtags) {
+  const lowerCaseInput = input.value.toLowerCase().split(' ');
+  let uniqIndexes = [];
+  lowerCaseInput.filter((hashtag) => uniqIndexes.push(lowerCaseInput.indexOf(hashtag)));
+  uniqIndexes = uniqIndexes.filter((item, index) => index === uniqIndexes.indexOf(item));
+  const uniqHashtags = [];
+  uniqIndexes.forEach((uniqIndex) => {
+    uniqHashtags.push(hashtags[uniqIndex]);
+  });
+  return uniqHashtags;
+}
+
 function keydownHandler (evt) {
-  const content = input.value.split(' ');
-  const currentHashtag = content[content.length -1];
+  const hashtags = input.value.split(' ');
+  const currentHashtag = hashtags[hashtags.length -1];
+
   if(isEscEvent(evt)) {
     evt.stopPropagation();
   }
@@ -20,14 +33,7 @@ function keydownHandler (evt) {
     }
   }
   if(isSpaceEvent(evt)) {
-    const lowerCaseHashtags = input.value.toLowerCase().split(' ');
-    let uniqIndexes = [];
-    lowerCaseHashtags.filter((hashtag) => uniqIndexes.push(lowerCaseHashtags.indexOf(hashtag)));
-    uniqIndexes = uniqIndexes.filter((item, index) => index === uniqIndexes.indexOf(item));
-    const uniqHashtags = [];
-    uniqIndexes.forEach((uniqIndex) => {
-      uniqHashtags.push(content[uniqIndex]);
-    });
+    const uniqHashtags = getUniqHashtags(hashtags);
     input.value = uniqHashtags.join(' ');
   }
 }
@@ -55,6 +61,14 @@ function keyupHandler () {
   if(hashtags.length > HASHTAGS_LIMIT) {
     hashtags.pop();
     input.value = hashtags.join(' ');
+  }
+  if(getUniqHashtags(hashtags).length !== hashtags.length) {
+    input.setAttribute('style', 'border-color: #FF0000');
+    input.setCustomValidity('Один и тот же хэш-тег не может быть использован дважды');
+    input.reportValidity();
+  } else {
+    input.removeAttribute('style');
+    input.setCustomValidity('');
   }
 }
 

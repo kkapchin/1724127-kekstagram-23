@@ -35,7 +35,7 @@ function onFail () {
       body.classList.remove('modal-open');
       errorBtn.replaceWith(errorBtnClone);
       body.removeChild(errorElement);
-      deleteEventListener(document, 'keydown', documentEscKeydownHandler);
+      deleteEventListener(document);
       redirectHome();
     }
   }
@@ -44,7 +44,7 @@ function onFail () {
     body.classList.remove('modal-open');
     errorBtn.replaceWith(errorBtnClone);
     body.removeChild(errorElement);
-    deleteEventListener(document, 'keydown', documentEscKeydownHandler);
+    deleteEventListener(document);
     redirectHome();
   }
 
@@ -53,7 +53,7 @@ function onFail () {
     body.classList.remove('modal-open');
     errorBtn.replaceWith(errorBtnClone);
     body.removeChild(errorElement);
-    deleteEventListener(document, 'keydown', documentEscKeydownHandler);
+    deleteEventListener(document);
     redirectHome();
   }
 
@@ -169,4 +169,5 @@ function onSuccess (pictures) {
   renderFullscreenPicture(defaultData);
   showFilters();
 }
+
 getData(onSuccess, onFail);

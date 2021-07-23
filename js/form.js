@@ -11,11 +11,20 @@ const form = document.querySelector('.img-upload__form');
 const file = document.querySelector('#upload-file');
 const overlay = document.querySelector('.img-upload__overlay');
 const preview = document.querySelector('.img-upload__preview');
+const input = document.querySelector('.text__hashtags');
+const textarea = document.querySelector('.text__description');
 
 form.setAttribute('action', 'https://23.javascript.pages.academy/kekstagram');
 form.setAttribute('method', 'POST');
 form.setAttribute('enctype', 'multipart/form-data');
 file.setAttribute('accept', VALID_FILE_TYPES.join(','));
+
+function resetInputs () {
+  input.removeAttribute('style');
+  input.setCustomValidity('');
+  textarea.removeAttribute('style');
+  textarea.setCustomValidity('');
+}
 
 function fileChangeHandler (event) {
   const image = event.target.files[0];
@@ -276,18 +285,20 @@ function fileChangeHandler (event) {
       errorButton.addEventListener('click', errorBtnClickHandler);
     }
 
-    const formData = new FormData(form);
-    sendData(formData, onSuccess, onFail);
+    if(input.checkValidity()) {
+      const formData = new FormData(form);
+      sendData(formData, onSuccess, onFail);
+    }
   }
 
   function reset () {
     form.reset();
     file.value = null;
-    deleteEventListener(decreaseButton, 'click', smallerBtnClickHandler );
-    deleteEventListener(increaseButton, 'click', biggerBtnClickHandler);
-    deleteEventListener(submitButton, 'click', submitClickHandler);
+    deleteEventListener(decreaseButton);
+    deleteEventListener(increaseButton);
+    deleteEventListener(submitButton);
     frame.forEach((effect) => {
-      deleteEventListener(effect, 'click', effectClickHandler);
+      deleteEventListener(effect);
     });
     setDefaultEffect();
     fieldset.classList.remove('hidden');
@@ -297,6 +308,7 @@ function fileChangeHandler (event) {
     preview.style.filter = null;
   }
 
+  resetInputs();
   openPopup(overlay);
   imgSize.value = '100%';
   preview.style.transform = 'scale(1)';

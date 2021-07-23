@@ -7,13 +7,16 @@ function keydownHandler (evt) {
   if(isEscEvent(evt)) {
     evt.stopPropagation();
   }
+  input.setCustomValidity('');
 }
 
 function keyupHandler () {
   const MIN = 0;
-  const MAX = 0;
+  const MAX = 140;
   if(!checkStringLength(input.value, MAX)) {
     input.value = input.value.substring(MIN, MAX);
+    input.setCustomValidity('Длина комментария не может составлять больше 140 символов');
+    input.reportValidity();
   }
 }
 
