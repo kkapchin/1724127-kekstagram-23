@@ -88,13 +88,13 @@ function createDefaultData (newData, data) {
   });
 }
 
-function createRandomData (randomizer, array, source) {
-  for (array.length; array.length < 10;) {
+function createRandomData (randomizer, newData, source) {
+  for (newData.length; newData.length < 10;) {
     const MIN = 0;
     const MAX = 24;
     const randomItem = source[randomizer(MIN, MAX)];
-    if(!array.includes(randomItem)) {
-      array.push(randomItem);
+    if(!newData.includes(randomItem)) {
+      newData.push(randomItem);
     }
   }
 }
