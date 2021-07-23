@@ -189,7 +189,7 @@ function fileChangeHandler (event) {
           body.classList.remove('modal-open');
           coolButton.replaceWith(coolButtonClone);
           body.removeChild(successElement);
-          deleteEventListener(document, 'keydown', documentEscKeydownHandler);
+          document.removeEventListener('keydown', documentEscKeydownHandler);
         }
       }
 
@@ -197,7 +197,7 @@ function fileChangeHandler (event) {
         body.classList.remove('modal-open');
         coolButton.replaceWith(coolButtonClone);
         body.removeChild(successElement);
-        deleteEventListener(document, 'keydown', documentEscKeydownHandler);
+        document.removeEventListener('keydown', documentEscKeydownHandler);
       }
 
       function successElementClickHandler (ev) {
@@ -205,18 +205,18 @@ function fileChangeHandler (event) {
         body.classList.remove('modal-open');
         coolButton.replaceWith(coolButtonClone);
         body.removeChild(successElement);
-        deleteEventListener(document, 'keydown', documentEscKeydownHandler);
+        document.removeEventListener('keydown', documentEscKeydownHandler);
       }
 
       overlay.classList.add('hidden');
       form.reset();
       file.value = null;
       cancelButton.replaceWith(cancelButtonClone);
-      deleteEventListener(decreaseButton, 'click', smallerBtnClickHandler );
-      deleteEventListener(increaseButton, 'click', biggerBtnClickHandler);
-      deleteEventListener(submitButton, 'click', submitClickHandler);
+      deleteEventListener(decreaseButton);
+      deleteEventListener(increaseButton);
+      deleteEventListener(submitButton);
       frame.forEach((effect) => {
-        deleteEventListener(effect, 'click', effectClickHandler);
+        deleteEventListener(effect);
       });
       setDefaultEffect();
       fieldset.classList.remove('hidden');
@@ -243,7 +243,7 @@ function fileChangeHandler (event) {
           body.classList.remove('modal-open');
           errorButton.replaceWith(errorButtonClone);
           body.removeChild(errorElement);
-          deleteEventListener(document, 'keydown', documentEscKeydownHandler);
+          document.removeEventListener('keydown', documentEscKeydownHandler);
         }
       }
 
@@ -251,7 +251,7 @@ function fileChangeHandler (event) {
         body.classList.remove('modal-open');
         errorButton.replaceWith(errorButtonClone);
         body.removeChild(errorElement);
-        deleteEventListener(document, 'keydown', documentEscKeydownHandler);
+        document.removeEventListener('keydown', documentEscKeydownHandler);
       }
 
       function errorElementClickHandler (ev) {
@@ -259,18 +259,18 @@ function fileChangeHandler (event) {
         body.classList.remove('modal-open');
         errorButton.replaceWith(errorButtonClone);
         body.removeChild(errorElement);
-        deleteEventListener(document, 'keydown', documentEscKeydownHandler);
+        document.removeEventListener('keydown', documentEscKeydownHandler);
       }
 
       overlay.classList.add('hidden');
       form.reset();
       file.value = null;
       cancelButton.replaceWith(cancelButtonClone);
-      deleteEventListener(decreaseButton, 'click', smallerBtnClickHandler );
-      deleteEventListener(increaseButton, 'click', biggerBtnClickHandler);
-      deleteEventListener(submitButton, 'click', submitClickHandler);
+      deleteEventListener(decreaseButton);
+      deleteEventListener(increaseButton);
+      deleteEventListener(submitButton);
       frame.forEach((effect) => {
-        deleteEventListener(effect, 'click', effectClickHandler);
+        deleteEventListener(effect);
       });
       setDefaultEffect();
       fieldset.classList.remove('hidden');

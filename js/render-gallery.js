@@ -2,7 +2,6 @@ import { getData } from './connection.js';
 import { renderFullscreenPicture } from './render-fullscreen-picture.js';
 import { DELAY } from './data.js';
 import { debounce } from './utils/debounce.js';
-import { deleteEventListener } from './utils/delete-event-listener.js';
 import { getRandomPositiveInteger } from './utils/get-random-positive-integer.js';
 import { isEscEvent } from './utils/is-escape-event.js';
 
@@ -35,7 +34,7 @@ function onFail () {
       body.classList.remove('modal-open');
       errorBtn.replaceWith(errorBtnClone);
       body.removeChild(errorElement);
-      deleteEventListener(document);
+      document.removeEventListener('keydown', documentEscKeydownHandler);
       redirectHome();
     }
   }
@@ -44,7 +43,7 @@ function onFail () {
     body.classList.remove('modal-open');
     errorBtn.replaceWith(errorBtnClone);
     body.removeChild(errorElement);
-    deleteEventListener(document);
+    document.removeEventListener('keydown', documentEscKeydownHandler);
     redirectHome();
   }
 
@@ -53,7 +52,7 @@ function onFail () {
     body.classList.remove('modal-open');
     errorBtn.replaceWith(errorBtnClone);
     body.removeChild(errorElement);
-    deleteEventListener(document);
+    document.removeEventListener('keydown', documentEscKeydownHandler);
     redirectHome();
   }
 
