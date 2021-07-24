@@ -1,4 +1,4 @@
-export function debounce(f, ms) {
+export const debounce = (f, ms) => {
 
   let isCooldown = false;
 
@@ -12,4 +12,4 @@ export function debounce(f, ms) {
     setTimeout(() => isCooldown = false, ms);
   };
 
-}
+};

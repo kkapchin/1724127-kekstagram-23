@@ -12,7 +12,7 @@ const defaultData = [];
 const randomData = [];
 const discussedData = [];
 
-function onFail () {
+const onFail = () => {
   const body = document.querySelector('body');
   const lastNode = document.querySelector('#messages');
   const errorElement = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
@@ -24,11 +24,11 @@ function onFail () {
   errorBtn.textContent = 'Вернуться на главную';
   const errorBtnClone = errorBtn.cloneNode(true);
 
-  function redirectHome () {
+  const redirectHome = () => {
     window.location.href='/';
-  }
+  };
 
-  function documentEscKeydownHandler (evt) {
+  const documentEscKeydownHandler = (evt) => {
     if(isEscEvent(evt)) {
       evt.preventDefault();
       body.classList.remove('modal-open');
@@ -37,33 +37,33 @@ function onFail () {
       document.removeEventListener('keydown', documentEscKeydownHandler);
       redirectHome();
     }
-  }
+  };
 
-  function errorBtnClickHandler () {
+  const errorBtnClickHandler = () => {
     body.classList.remove('modal-open');
     errorBtn.replaceWith(errorBtnClone);
     body.removeChild(errorElement);
     document.removeEventListener('keydown', documentEscKeydownHandler);
     redirectHome();
-  }
+  };
 
-  function errorElementClickHandler (evt) {
+  const errorElementClickHandler = (evt) => {
     evt.stopPropagation();
     body.classList.remove('modal-open');
     errorBtn.replaceWith(errorBtnClone);
     body.removeChild(errorElement);
     document.removeEventListener('keydown', documentEscKeydownHandler);
     redirectHome();
-  }
+  };
 
   body.appendChild(errorElement, lastNode.nextSibling);
   errorElement.addEventListener('click', errorElementClickHandler);
   errorInner.addEventListener('click', (e) => e.stopPropagation());
   document.addEventListener('keydown', documentEscKeydownHandler);
   errorBtn.addEventListener('click', errorBtnClickHandler);
-}
+};
 
-function renderGallery (data) {
+const renderGallery = (data) => {
   let index = 0;
   data.forEach(({url, description, likes, comments}) => {
     const pictureElement = pictureTemplate.cloneNode(true);
@@ -79,15 +79,15 @@ function renderGallery (data) {
   document.querySelector('.pictures__title')
     .classList
     .remove('visually-hidden');
-}
+};
 
-function createDefaultData (newData, data) {
+const createDefaultData = (newData, data) => {
   data.forEach((item) => {
     newData.push(item);
   });
-}
+};
 
-function createRandomData (randomizer, newData, source) {
+const createRandomData = (randomizer, newData, source) => {
   for (newData.length; newData.length < 10;) {
     const MIN = 0;
     const MAX = 24;
@@ -96,30 +96,30 @@ function createRandomData (randomizer, newData, source) {
       newData.push(randomItem);
     }
   }
-}
+};
 
-function createDiscussedData (newData, data) {
+const createDiscussedData = (newData, data) => {
   data
     .slice()
     .sort((a, b) => b.comments.length - a.comments.length)
     .forEach((item) => newData.push(item));
-}
+};
 
-function showFilters () {
+const showFilters = () => {
   const filtersElement = document.querySelector('.img-filters');
   const defaultFilter = filtersElement.querySelector('#filter-default');
   const randomFilter = filtersElement.querySelector('#filter-random');
   const discussedFilter = filtersElement.querySelector('#filter-discussed');
 
-  function clearGallery () {
+  const clearGallery = () => {
     const elements = picturesContainer.querySelectorAll('.picture');
     elements.forEach(() => {
       const child = picturesContainer.lastElementChild;
       picturesContainer.removeChild(child);
     });
-  }
+  };
 
-  function setFilterActive (filter) {
+  const setFilterActive = (filter) => {
     const filterClass = 'img-filters__button--active';
     const elements = [defaultFilter, randomFilter, discussedFilter];
     elements.forEach((element) => {
@@ -128,31 +128,31 @@ function showFilters () {
       }
     });
     filter.classList.add(filterClass);
-  }
+  };
 
-  function defaultFilterClickHandler () {
+  const defaultFilterClickHandler = () => {
     debounce(defaultFilterClickHandler, DELAY);
     setFilterActive(defaultFilter);
     clearGallery();
     renderGallery(defaultData);
     renderFullscreenPicture(defaultData);
-  }
+  };
 
-  function randomFilterClickHandler () {
+  const randomFilterClickHandler = () => {
     debounce(randomFilterClickHandler, DELAY);
     setFilterActive(randomFilter);
     clearGallery();
     renderGallery(randomData);
     renderFullscreenPicture(randomData);
-  }
+  };
 
-  function discussedFilterClickHandler () {
+  const discussedFilterClickHandler = () => {
     debounce(discussedFilterClickHandler, DELAY);
     setFilterActive(discussedFilter);
     clearGallery();
     renderGallery(discussedData);
     renderFullscreenPicture(discussedData);
-  }
+  };
 
   createRandomData(getRandomPositiveInteger, randomData, defaultData);
   createDiscussedData(discussedData, defaultData);
@@ -160,13 +160,13 @@ function showFilters () {
   defaultFilter.addEventListener('click', defaultFilterClickHandler);
   randomFilter.addEventListener('click', randomFilterClickHandler);
   discussedFilter.addEventListener('click', discussedFilterClickHandler);
-}
+};
 
-function onSuccess (pictures) {
+const onSuccess = (pictures) => {
   createDefaultData(defaultData, pictures);
   renderGallery(defaultData);
   renderFullscreenPicture(defaultData);
   showFilters();
-}
+};
 
 getData(onSuccess, onFail);

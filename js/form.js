@@ -19,14 +19,14 @@ form.setAttribute('method', 'POST');
 form.setAttribute('enctype', 'multipart/form-data');
 file.setAttribute('accept', VALID_FILE_TYPES.join(','));
 
-function resetInputs () {
+const resetInputs = () => {
   input.removeAttribute('style');
   input.setCustomValidity('');
   textarea.removeAttribute('style');
   textarea.setCustomValidity('');
-}
+};
 
-function fileChangeHandler (event) {
+const fileChangeHandler = (event) => {
   const image = event.target.files[0];
   const reader = new FileReader();
   const imgSize = document.querySelector('.scale__control--value');
@@ -41,13 +41,13 @@ function fileChangeHandler (event) {
   const submitButton = document.querySelector('#upload-submit');
   let currentEffect = 'effects__preview--none';
 
-  function setDefaultEffect () {
+  const setDefaultEffect = () => {
     preview.classList.remove(currentEffect);
     currentEffect = 'effects__preview--none';
     preview.classList.add(currentEffect);
-  }
+  };
 
-  function smallerBtnClickHandler () {
+  const smallerBtnClickHandler = () => {
     switch (imgSize.value) {
       case '100%':
         imgSize.value = '75%';
@@ -62,9 +62,9 @@ function fileChangeHandler (event) {
         preview.style.transform = 'scale(0.25)';
         break;
     }
-  }
+  };
 
-  function biggerBtnClickHandler () {
+  const biggerBtnClickHandler = () => {
     switch (imgSize.value) {
       case '75%':
         imgSize.value = '100%';
@@ -79,9 +79,9 @@ function fileChangeHandler (event) {
         preview.style.transform = 'scale(0.5)';
         break;
     }
-  }
+  };
 
-  function setNoUiSliderOptions (option) {
+  const setNoUiSliderOptions = (option) => {
     switch(option) {
       case 'effects__preview--none':
         setDefaultEffect();
@@ -128,9 +128,9 @@ function fileChangeHandler (event) {
         });
         break;
     }
-  }
+  };
 
-  function effectClickHandler (evt) {
+  const effectClickHandler = (evt) => {
     preview.classList.remove(currentEffect);
     currentEffect = `effects__preview--${evt.target.value}`;
     preview.classList.add(currentEffect);
@@ -169,21 +169,21 @@ function fileChangeHandler (event) {
           break;
       }
     });
-  }
+  };
 
-  function submitClickHandler (evt) {
+  const submitClickHandler = (evt) => {
     evt.preventDefault();
     const body = document.querySelector('body');
     const lastNode = document.querySelector('#messages');
     const cancelButtonClone = cancelButton.cloneNode(true);
 
-    function onSuccess () {
+    const onSuccess = () => {
       const successElement = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
       const coolButton = successElement.querySelector('.success__button');
       const coolButtonClone = coolButton.cloneNode(true);
       const successInner = successElement.querySelector('.success__inner');
 
-      function documentEscKeydownHandler (ev) {
+      const documentEscKeydownHandler = (ev) => {
         if(isEscEvent(ev)) {
           ev.preventDefault();
           body.classList.remove('modal-open');
@@ -191,22 +191,22 @@ function fileChangeHandler (event) {
           body.removeChild(successElement);
           document.removeEventListener('keydown', documentEscKeydownHandler);
         }
-      }
+      };
 
-      function coolBtnClickHandler () {
+      const coolBtnClickHandler = () => {
         body.classList.remove('modal-open');
         coolButton.replaceWith(coolButtonClone);
         body.removeChild(successElement);
         document.removeEventListener('keydown', documentEscKeydownHandler);
-      }
+      };
 
-      function successElementClickHandler (ev) {
+      const successElementClickHandler = (ev) => {
         ev.stopPropagation();
         body.classList.remove('modal-open');
         coolButton.replaceWith(coolButtonClone);
         body.removeChild(successElement);
         document.removeEventListener('keydown', documentEscKeydownHandler);
-      }
+      };
 
       overlay.classList.add('hidden');
       form.reset();
@@ -229,15 +229,15 @@ function fileChangeHandler (event) {
       successInner.addEventListener('click', (e) => e.stopPropagation());
       document.addEventListener('keydown', documentEscKeydownHandler);
       coolButton.addEventListener('click', coolBtnClickHandler);
-    }
+    };
 
-    function onFail () {
+    const onFail = () => {
       const errorElement = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
       const errorButton = errorElement.querySelector('.error__button');
       const errorButtonClone = errorButton.cloneNode(true);
       const errorInner = errorElement.querySelector('.error__inner');
 
-      function documentEscKeydownHandler (ev) {
+      const documentEscKeydownHandler = (ev) => {
         if(isEscEvent(ev)) {
           ev.preventDefault();
           body.classList.remove('modal-open');
@@ -245,22 +245,22 @@ function fileChangeHandler (event) {
           body.removeChild(errorElement);
           document.removeEventListener('keydown', documentEscKeydownHandler);
         }
-      }
+      };
 
-      function errorBtnClickHandler () {
+      const errorBtnClickHandler = () => {
         body.classList.remove('modal-open');
         errorButton.replaceWith(errorButtonClone);
         body.removeChild(errorElement);
         document.removeEventListener('keydown', documentEscKeydownHandler);
-      }
+      };
 
-      function errorElementClickHandler (ev) {
+      const errorElementClickHandler = (ev) => {
         ev.stopPropagation();
         body.classList.remove('modal-open');
         errorButton.replaceWith(errorButtonClone);
         body.removeChild(errorElement);
         document.removeEventListener('keydown', documentEscKeydownHandler);
-      }
+      };
 
       overlay.classList.add('hidden');
       form.reset();
@@ -283,15 +283,15 @@ function fileChangeHandler (event) {
       errorInner.addEventListener('click', (e) => e.stopPropagation());
       document.addEventListener('keydown', documentEscKeydownHandler);
       errorButton.addEventListener('click', errorBtnClickHandler);
-    }
+    };
 
     if(input.checkValidity()) {
       const formData = new FormData(form);
       sendData(formData, onSuccess, onFail);
     }
-  }
+  };
 
-  function reset () {
+  const reset = () => {
     form.reset();
     file.value = null;
     deleteEventListener(decreaseButton);
@@ -306,7 +306,7 @@ function fileChangeHandler (event) {
       sliderElement.noUiSlider.destroy();
     }
     preview.style.filter = null;
-  }
+  };
 
   resetInputs();
   openPopup(overlay);
@@ -336,6 +336,6 @@ function fileChangeHandler (event) {
   increaseButton.addEventListener('click', biggerBtnClickHandler);
   submitButton.addEventListener('click', submitClickHandler);
   closePopup(cancelButton, overlay, reset);
-}
+};
 
 file.addEventListener('change', fileChangeHandler);

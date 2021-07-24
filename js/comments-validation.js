@@ -3,14 +3,14 @@ import { isEscEvent } from './utils/is-escape-event.js';
 
 const input = document.querySelector('.text__description');
 
-function keydownHandler (evt) {
+const keydownHandler = (evt) => {
   if(isEscEvent(evt)) {
     evt.stopPropagation();
   }
   input.setCustomValidity('');
-}
+};
 
-function keyupHandler () {
+const keyupHandler = () => {
   const MIN = 0;
   const MAX = 140;
   if(!checkStringLength(input.value, MAX)) {
@@ -18,7 +18,7 @@ function keyupHandler () {
     input.setCustomValidity('Длина комментария не может составлять больше 140 символов');
     input.reportValidity();
   }
-}
+};
 
 input.addEventListener('keydown', keydownHandler);
 input.addEventListener('keyup', keyupHandler);

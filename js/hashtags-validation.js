@@ -5,19 +5,19 @@ const regHashtag = /^#[A-Za-zА-Яа-я0-9_]{1,19}$/;
 const regInput = /[A-Za-z0-9А-Яа-я #_]$/;
 const input = document.querySelector('.text__hashtags');
 
-function getUniqHashtags (hashtags) {
-  const lowerCaseInput = input.value.toLowerCase().split(' ');
+const getUniqHashtags = (hashtags) => {
+  const lowerCasedHashtags = input.value.toLowerCase().split(' ');
   let uniqIndexes = [];
-  lowerCaseInput.filter((hashtag) => uniqIndexes.push(lowerCaseInput.indexOf(hashtag)));
+  lowerCasedHashtags.filter((hashtag) => uniqIndexes.push(lowerCasedHashtags.indexOf(hashtag)));
   uniqIndexes = uniqIndexes.filter((item, index) => index === uniqIndexes.indexOf(item));
   const uniqHashtags = [];
   uniqIndexes.forEach((uniqIndex) => {
     uniqHashtags.push(hashtags[uniqIndex]);
   });
   return uniqHashtags;
-}
+};
 
-function keydownHandler (evt) {
+const keydownHandler = (evt) => {
   const hashtags = input.value.split(' ');
   const currentHashtag = hashtags[hashtags.length -1];
 
@@ -36,9 +36,9 @@ function keydownHandler (evt) {
     const uniqHashtags = getUniqHashtags(hashtags);
     input.value = uniqHashtags.join(' ');
   }
-}
+};
 
-function keyupHandler () {
+const keyupHandler = () => {
   const HASHTAGS_LIMIT = 5;
   const HASHTAG_MAX_LENGTH = 20;
   const LETTERS_MIN = 0;
@@ -70,16 +70,16 @@ function keyupHandler () {
     input.removeAttribute('style');
     input.setCustomValidity('');
   }
-}
+};
 
-function focusoutHandler () {
+const focusoutHandler = () => {
   const hashtags = input.value.split(' ');
   const currentHashtag = hashtags[hashtags.length -1];
   if(currentHashtag === '#') {
     hashtags.pop();
     input.value = hashtags.join(' ');
   }
-}
+};
 
 input.addEventListener('keydown', keydownHandler);
 input.addEventListener('keyup', keyupHandler);

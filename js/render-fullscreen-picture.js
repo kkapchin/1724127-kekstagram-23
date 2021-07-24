@@ -2,13 +2,13 @@ import { closePopup } from './utils/close-popup.js';
 import { openPopup } from './utils/open-popup.js';
 
 
-function renderFullscreenPicture (data) {
+const renderFullscreenPicture = (data) => {
   const fullImg = document.querySelector('.big-picture');
   const img = document.querySelectorAll('.picture__img');
   const commentCount = document.querySelector('.social__comment-count');
 
 
-  function pictureClickHandler (event) {
+  const pictureClickHandler = (event) => {
     event.preventDefault();
     const index = event.target.attributes.index.value;
     const picData = data[index];
@@ -22,18 +22,18 @@ function renderFullscreenPicture (data) {
     const commentsLoaderBtn = document.querySelector('.social__comments-loader');
     let revealedCommentsCount = null;
 
-    function setRevealedCommentsCount () {
+    const setRevealedCommentsCount = () => {
       const socialComments = document.querySelector('.social__comments');
       revealedCommentsCount = socialComments.querySelectorAll('.revealed').length;
       socialCommentCount.childNodes[0].textContent = `${revealedCommentsCount} из `;
-    }
+    };
 
-    function resetRevealedCommentsCount () {
+    const resetRevealedCommentsCount = () => {
       revealedCommentsCount = 0;
       socialCommentCount.childNodes[0].textContent = `${revealedCommentsCount} из `;
-    }
+    };
 
-    function setCommentsLoaderBtnStatus () {
+    const setCommentsLoaderBtnStatus = () => {
       const socialComments = document.querySelector('.social__comments');
       const commentItems = socialComments.querySelectorAll('.true__comment.hidden');
       if(commentItems.length < 1) {
@@ -41,8 +41,9 @@ function renderFullscreenPicture (data) {
       } else {
         commentsLoaderBtn.classList.remove('hidden');
       }
-    }
-    function revealComments () {
+    };
+
+    const revealComments = () => {
       const LIMIT = 5;
       const socialComments = document.querySelector('.social__comments');
       const commentItems = socialComments.querySelectorAll('.true__comment.hidden');
@@ -54,9 +55,9 @@ function renderFullscreenPicture (data) {
       }
       setRevealedCommentsCount();
       setCommentsLoaderBtnStatus();
-    }
+    };
 
-    function renderComments (commentaries) {
+    const renderComments = (commentaries) => {
       const socialComments = document.querySelector('.social__comments');
       commentaries.forEach(({id, avatar, message}) => {
         const commentElement = socialComments.querySelector('.social__comment').cloneNode(true);
@@ -73,13 +74,13 @@ function renderFullscreenPicture (data) {
         item.classList.add('hidden');
       });
       revealComments();
-    }
+    };
 
-    function commentsLoaderBtnClickHandler () {
+    const commentsLoaderBtnClickHandler = () => {
       revealComments();
-    }
+    };
 
-    function clearCommentsContainer () {
+    const clearCommentsContainer = () => {
       const socialComments = document.querySelector('.social__comments');
       socialComments.children[0].classList.add('hidden');
       const commentItems = socialComments.querySelectorAll('.true__comment');
@@ -89,7 +90,7 @@ function renderFullscreenPicture (data) {
       const commentsLoaderBtnClone = commentsLoaderBtn.cloneNode(true);
       commentsLoaderBtn.replaceWith(commentsLoaderBtnClone);
       resetRevealedCommentsCount();
-    }
+    };
 
     openPopup(fullImg);
     setCommentsLoaderBtnStatus();
@@ -100,11 +101,11 @@ function renderFullscreenPicture (data) {
     renderComments(comments);
     commentsLoaderBtn.addEventListener('click', commentsLoaderBtnClickHandler);
     closePopup(cancelButton, fullImg, clearCommentsContainer);
-  }
+  };
 
   img.forEach((picture) => {
     picture.addEventListener('click', pictureClickHandler);
   });
-}
+};
 
 export { renderFullscreenPicture };

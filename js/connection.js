@@ -1,12 +1,12 @@
-async function getData (success, fail) {
+const getData = async (success, fail) => {
 
   fetch('https://23.javascript.pages.academy/kekstagram/data')
     .then((response) => response.json())
     .then((data) => success(data))
     .catch(() => fail());
-}
+};
 
-async function sendData (data, success, fail) {
+const sendData = async (data, success, fail) => {
   fetch(
     'https://23.javascript.pages.academy/kekstagram',
     {
@@ -21,7 +21,7 @@ async function sendData (data, success, fail) {
     }
   })
     .catch(() => fail());
-}
+};
 
 export {
   getData,

@@ -1,3 +1,2 @@
-export function isSpaceEvent (evt) {
-  return evt.key === ' ' || evt.key === 'space';
-}
+export const isSpaceEvent = (evt) =>
+  evt.key === ' ' || evt.key === 'space';
