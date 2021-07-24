@@ -7,76 +7,76 @@ import { deleteEventListener } from './utils/delete-event-listener.js';
 import { isEscEvent } from './utils/is-escape-event.js';
 import { VALID_FILE_TYPES } from './data.js';
 
-const form = document.querySelector('.img-upload__form');
-const file = document.querySelector('#upload-file');
-const overlay = document.querySelector('.img-upload__overlay');
-const preview = document.querySelector('.img-upload__preview');
-const input = document.querySelector('.text__hashtags');
-const textarea = document.querySelector('.text__description');
+const formElement = document.querySelector('.img-upload__form');
+const fileElement = document.querySelector('#upload-file');
+const overlayElement = document.querySelector('.img-upload__overlay');
+const previewElement = document.querySelector('.img-upload__preview');
+const hashtagElement = document.querySelector('.text__hashtags');
+const descriptionElement = document.querySelector('.text__description');
 
-form.setAttribute('action', 'https://23.javascript.pages.academy/kekstagram');
-form.setAttribute('method', 'POST');
-form.setAttribute('enctype', 'multipart/form-data');
-file.setAttribute('accept', VALID_FILE_TYPES.join(','));
+formElement.setAttribute('action', 'https://23.javascript.pages.academy/kekstagram');
+formElement.setAttribute('method', 'POST');
+formElement.setAttribute('enctype', 'multipart/form-data');
+fileElement.setAttribute('accept', VALID_FILE_TYPES.join(','));
 
 const resetInputs = () => {
-  input.removeAttribute('style');
-  input.setCustomValidity('');
-  textarea.removeAttribute('style');
-  textarea.setCustomValidity('');
+  hashtagElement.removeAttribute('style');
+  hashtagElement.setCustomValidity('');
+  descriptionElement.removeAttribute('style');
+  descriptionElement.setCustomValidity('');
 };
 
 const fileChangeHandler = (event) => {
   const image = event.target.files[0];
   const reader = new FileReader();
-  const imgSize = document.querySelector('.scale__control--value');
-  const decreaseButton = document.querySelector('.scale__control--smaller');
-  const increaseButton = document.querySelector('.scale__control--bigger');
-  const effectPreview = document.querySelectorAll('.effects__preview');
-  const frame = document.querySelectorAll('.effects__radio');
+  const imgSizeElement = document.querySelector('.scale__control--value');
+  const decreaseButtonElement = document.querySelector('.scale__control--smaller');
+  const increaseButtonElement = document.querySelector('.scale__control--bigger');
+  const effectPreviewElement = document.querySelectorAll('.effects__preview');
+  const frameElement = document.querySelectorAll('.effects__radio');
   const sliderElement = document.querySelector('.effect-level__slider');
   const effectValueElement = document.querySelector('.effect-level__value');
-  const fieldset = document.querySelector('.img-upload__effect-level');
-  const cancelButton = document.querySelector('.img-upload__cancel');
-  const submitButton = document.querySelector('#upload-submit');
+  const fieldsetElement = document.querySelector('.img-upload__effect-level');
+  const cancelButtonElement = document.querySelector('.img-upload__cancel');
+  const submitButtonElement = document.querySelector('#upload-submit');
   let currentEffect = 'effects__preview--none';
 
   const setDefaultEffect = () => {
-    preview.classList.remove(currentEffect);
+    previewElement.classList.remove(currentEffect);
     currentEffect = 'effects__preview--none';
-    preview.classList.add(currentEffect);
+    previewElement.classList.add(currentEffect);
   };
 
   const smallerBtnClickHandler = () => {
-    switch (imgSize.value) {
+    switch (imgSizeElement.value) {
       case '100%':
-        imgSize.value = '75%';
-        preview.style.transform = 'scale(0.75)';
+        imgSizeElement.value = '75%';
+        previewElement.style.transform = 'scale(0.75)';
         break;
       case '75%':
-        imgSize.value = '50%';
-        preview.style.transform = 'scale(0.5)';
+        imgSizeElement.value = '50%';
+        previewElement.style.transform = 'scale(0.5)';
         break;
       case '50%':
-        imgSize.value = '25%';
-        preview.style.transform = 'scale(0.25)';
+        imgSizeElement.value = '25%';
+        previewElement.style.transform = 'scale(0.25)';
         break;
     }
   };
 
   const biggerBtnClickHandler = () => {
-    switch (imgSize.value) {
+    switch (imgSizeElement.value) {
       case '75%':
-        imgSize.value = '100%';
-        preview.style.transform = 'scale(1)';
+        imgSizeElement.value = '100%';
+        previewElement.style.transform = 'scale(1)';
         break;
       case '50%':
-        imgSize.value = '75%';
-        preview.style.transform = 'scale(0.75)';
+        imgSizeElement.value = '75%';
+        previewElement.style.transform = 'scale(0.75)';
         break;
       case '25%':
-        imgSize.value = '50%';
-        preview.style.transform = 'scale(0.5)';
+        imgSizeElement.value = '50%';
+        previewElement.style.transform = 'scale(0.5)';
         break;
     }
   };
@@ -131,40 +131,40 @@ const fileChangeHandler = (event) => {
   };
 
   const effectClickHandler = (evt) => {
-    preview.classList.remove(currentEffect);
+    previewElement.classList.remove(currentEffect);
     currentEffect = `effects__preview--${evt.target.value}`;
-    preview.classList.add(currentEffect);
+    previewElement.classList.add(currentEffect);
     setNoUiSliderOptions(currentEffect);
     sliderElement.noUiSlider.on('update', (_, handle, unencoded) => {
       switch(evt.target.value) {
         case 'none':
-          fieldset.classList.add('hidden');
-          preview.style.filter = null;
+          fieldsetElement.classList.add('hidden');
+          previewElement.style.filter = null;
           effectValueElement.value = null;
           break;
         case 'chrome':
-          fieldset.classList.remove('hidden');
-          preview.style.filter = `grayscale(${effectValueElement.value})`;
+          fieldsetElement.classList.remove('hidden');
+          previewElement.style.filter = `grayscale(${effectValueElement.value})`;
           effectValueElement.value = unencoded[handle];
           break;
         case 'sepia':
-          fieldset.classList.remove('hidden');
-          preview.style.filter = `sepia(${effectValueElement.value})`;
+          fieldsetElement.classList.remove('hidden');
+          previewElement.style.filter = `sepia(${effectValueElement.value})`;
           effectValueElement.value = unencoded[handle];
           break;
         case 'marvin':
-          fieldset.classList.remove('hidden');
-          preview.style.filter = `invert(${effectValueElement.value}%)`;
+          fieldsetElement.classList.remove('hidden');
+          previewElement.style.filter = `invert(${effectValueElement.value}%)`;
           effectValueElement.value = unencoded[handle];
           break;
         case 'phobos':
-          fieldset.classList.remove('hidden');
-          preview.style.filter = `blur(${effectValueElement.value}px)`;
+          fieldsetElement.classList.remove('hidden');
+          previewElement.style.filter = `blur(${effectValueElement.value}px)`;
           effectValueElement.value = unencoded[handle];
           break;
         case 'heat':
-          fieldset.classList.remove('hidden');
-          preview.style.filter = `brightness(${effectValueElement.value})`;
+          fieldsetElement.classList.remove('hidden');
+          previewElement.style.filter = `brightness(${effectValueElement.value})`;
           effectValueElement.value = unencoded[handle];
           break;
       }
@@ -173,149 +173,149 @@ const fileChangeHandler = (event) => {
 
   const submitClickHandler = (evt) => {
     evt.preventDefault();
-    const body = document.querySelector('body');
-    const lastNode = document.querySelector('#messages');
-    const cancelButtonClone = cancelButton.cloneNode(true);
+    const bodyElement = document.querySelector('body');
+    const lastNodeElement = document.querySelector('#messages');
+    const cancelButtonElementClone = cancelButtonElement.cloneNode(true);
 
     const onSuccess = () => {
       const successElement = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
-      const coolButton = successElement.querySelector('.success__button');
-      const coolButtonClone = coolButton.cloneNode(true);
-      const successInner = successElement.querySelector('.success__inner');
+      const coolButtonElement = successElement.querySelector('.success__button');
+      const coolButtonElementClone = coolButtonElement.cloneNode(true);
+      const successInnerElement = successElement.querySelector('.success__inner');
 
       const documentEscKeydownHandler = (ev) => {
         if(isEscEvent(ev)) {
           ev.preventDefault();
-          body.classList.remove('modal-open');
-          coolButton.replaceWith(coolButtonClone);
-          body.removeChild(successElement);
+          bodyElement.classList.remove('modal-open');
+          coolButtonElement.replaceWith(coolButtonElementClone);
+          bodyElement.removeChild(successElement);
           document.removeEventListener('keydown', documentEscKeydownHandler);
         }
       };
 
       const coolBtnClickHandler = () => {
-        body.classList.remove('modal-open');
-        coolButton.replaceWith(coolButtonClone);
-        body.removeChild(successElement);
+        bodyElement.classList.remove('modal-open');
+        coolButtonElement.replaceWith(coolButtonElementClone);
+        bodyElement.removeChild(successElement);
         document.removeEventListener('keydown', documentEscKeydownHandler);
       };
 
       const successElementClickHandler = (ev) => {
         ev.stopPropagation();
-        body.classList.remove('modal-open');
-        coolButton.replaceWith(coolButtonClone);
-        body.removeChild(successElement);
+        bodyElement.classList.remove('modal-open');
+        coolButtonElement.replaceWith(coolButtonElementClone);
+        bodyElement.removeChild(successElement);
         document.removeEventListener('keydown', documentEscKeydownHandler);
       };
 
-      overlay.classList.add('hidden');
-      form.reset();
-      file.value = null;
-      cancelButton.replaceWith(cancelButtonClone);
-      deleteEventListener(decreaseButton);
-      deleteEventListener(increaseButton);
-      deleteEventListener(submitButton);
-      frame.forEach((effect) => {
+      overlayElement.classList.add('hidden');
+      formElement.reset();
+      fileElement.value = null;
+      cancelButtonElement.replaceWith(cancelButtonElementClone);
+      deleteEventListener(decreaseButtonElement);
+      deleteEventListener(increaseButtonElement);
+      deleteEventListener(submitButtonElement);
+      frameElement.forEach((effect) => {
         deleteEventListener(effect);
       });
       setDefaultEffect();
-      fieldset.classList.remove('hidden');
+      fieldsetElement.classList.remove('hidden');
       if(sliderElement.noUiSlider) {
         sliderElement.noUiSlider.destroy();
       }
-      preview.style.filter = null;
-      body.appendChild(successElement, lastNode.nextSibling);
+      previewElement.style.filter = null;
+      bodyElement.appendChild(successElement, lastNodeElement.nextSibling);
       successElement.addEventListener('click', successElementClickHandler);
-      successInner.addEventListener('click', (e) => e.stopPropagation());
+      successInnerElement.addEventListener('click', (e) => e.stopPropagation());
       document.addEventListener('keydown', documentEscKeydownHandler);
-      coolButton.addEventListener('click', coolBtnClickHandler);
+      coolButtonElement.addEventListener('click', coolBtnClickHandler);
     };
 
     const onFail = () => {
       const errorElement = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
-      const errorButton = errorElement.querySelector('.error__button');
-      const errorButtonClone = errorButton.cloneNode(true);
-      const errorInner = errorElement.querySelector('.error__inner');
+      const errorButtonElement = errorElement.querySelector('.error__button');
+      const errorButtonElementClone = errorButtonElement.cloneNode(true);
+      const errorInnerElement = errorElement.querySelector('.error__inner');
 
       const documentEscKeydownHandler = (ev) => {
         if(isEscEvent(ev)) {
           ev.preventDefault();
-          body.classList.remove('modal-open');
-          errorButton.replaceWith(errorButtonClone);
-          body.removeChild(errorElement);
+          bodyElement.classList.remove('modal-open');
+          errorButtonElement.replaceWith(errorButtonElementClone);
+          bodyElement.removeChild(errorElement);
           document.removeEventListener('keydown', documentEscKeydownHandler);
         }
       };
 
       const errorBtnClickHandler = () => {
-        body.classList.remove('modal-open');
-        errorButton.replaceWith(errorButtonClone);
-        body.removeChild(errorElement);
+        bodyElement.classList.remove('modal-open');
+        errorButtonElement.replaceWith(errorButtonElementClone);
+        bodyElement.removeChild(errorElement);
         document.removeEventListener('keydown', documentEscKeydownHandler);
       };
 
       const errorElementClickHandler = (ev) => {
         ev.stopPropagation();
-        body.classList.remove('modal-open');
-        errorButton.replaceWith(errorButtonClone);
-        body.removeChild(errorElement);
+        bodyElement.classList.remove('modal-open');
+        errorButtonElement.replaceWith(errorButtonElementClone);
+        bodyElement.removeChild(errorElement);
         document.removeEventListener('keydown', documentEscKeydownHandler);
       };
 
-      overlay.classList.add('hidden');
-      form.reset();
-      file.value = null;
-      cancelButton.replaceWith(cancelButtonClone);
-      deleteEventListener(decreaseButton);
-      deleteEventListener(increaseButton);
-      deleteEventListener(submitButton);
-      frame.forEach((effect) => {
+      overlayElement.classList.add('hidden');
+      formElement.reset();
+      fileElement.value = null;
+      cancelButtonElement.replaceWith(cancelButtonElementClone);
+      deleteEventListener(decreaseButtonElement);
+      deleteEventListener(increaseButtonElement);
+      deleteEventListener(submitButtonElement);
+      frameElement.forEach((effect) => {
         deleteEventListener(effect);
       });
       setDefaultEffect();
-      fieldset.classList.remove('hidden');
+      fieldsetElement.classList.remove('hidden');
       if(sliderElement.noUiSlider) {
         sliderElement.noUiSlider.destroy();
       }
-      preview.style.filter = null;
-      body.appendChild(errorElement, lastNode.nextSibling);
+      previewElement.style.filter = null;
+      bodyElement.appendChild(errorElement, lastNodeElement.nextSibling);
       errorElement.addEventListener('click', errorElementClickHandler);
-      errorInner.addEventListener('click', (e) => e.stopPropagation());
+      errorInnerElement.addEventListener('click', (e) => e.stopPropagation());
       document.addEventListener('keydown', documentEscKeydownHandler);
-      errorButton.addEventListener('click', errorBtnClickHandler);
+      errorButtonElement.addEventListener('click', errorBtnClickHandler);
     };
 
-    if(input.checkValidity()) {
-      const formData = new FormData(form);
+    if(hashtagElement.checkValidity()) {
+      const formData = new FormData(formElement);
       sendData(formData, onSuccess, onFail);
     }
   };
 
   const reset = () => {
-    form.reset();
-    file.value = null;
-    deleteEventListener(decreaseButton);
-    deleteEventListener(increaseButton);
-    deleteEventListener(submitButton);
-    frame.forEach((effect) => {
+    formElement.reset();
+    fileElement.value = null;
+    deleteEventListener(decreaseButtonElement);
+    deleteEventListener(increaseButtonElement);
+    deleteEventListener(submitButtonElement);
+    frameElement.forEach((effect) => {
       deleteEventListener(effect);
     });
     setDefaultEffect();
-    fieldset.classList.remove('hidden');
+    fieldsetElement.classList.remove('hidden');
     if(sliderElement.noUiSlider) {
       sliderElement.noUiSlider.destroy();
     }
-    preview.style.filter = null;
+    previewElement.style.filter = null;
   };
 
   resetInputs();
-  openPopup(overlay);
-  imgSize.value = '100%';
-  preview.style.transform = 'scale(1)';
-  fieldset.classList.add('hidden');
+  openPopup(overlayElement);
+  imgSizeElement.value = '100%';
+  previewElement.style.transform = 'scale(1)';
+  fieldsetElement.classList.add('hidden');
   reader.onload = () => {
-    preview.children[0].src = reader.result;
-    effectPreview.forEach((background) => {
+    previewElement.children[0].src = reader.result;
+    effectPreviewElement.forEach((background) => {
       background.style.backgroundImage = `url(${reader.result})`;
     });
   };
@@ -329,13 +329,13 @@ const fileChangeHandler = (event) => {
     step: 10,
     connect: 'lower',
   });
-  frame.forEach((effect) => {
+  frameElement.forEach((effect) => {
     effect.addEventListener('click', effectClickHandler);
   });
-  decreaseButton.addEventListener('click', smallerBtnClickHandler);
-  increaseButton.addEventListener('click', biggerBtnClickHandler);
-  submitButton.addEventListener('click', submitClickHandler);
-  closePopup(cancelButton, overlay, reset);
+  decreaseButtonElement.addEventListener('click', smallerBtnClickHandler);
+  increaseButtonElement.addEventListener('click', biggerBtnClickHandler);
+  submitButtonElement.addEventListener('click', submitClickHandler);
+  closePopup(cancelButtonElement, overlayElement, reset);
 };
 
-file.addEventListener('change', fileChangeHandler);
+fileElement.addEventListener('change', fileChangeHandler);

@@ -1,6 +1,13 @@
 import { isEscEvent } from './utils/is-escape-event.js';
 import { isSpaceEvent } from './utils/is-space-event.js';
 
+const HASHTAGS_LIMIT = 5;
+const HASHTAG_MAX_LENGTH = 20;
+const LETTERS_MIN = 0;
+const LETTERS_MAX = 19;
+const SYMBOLS_MIN = 0;
+const SYMBOLS_MAX = 20;
+
 const regHashtag = /^#[A-Za-zА-Яа-я0-9_]{1,19}$/;
 const regInput = /[A-Za-z0-9А-Яа-я #_]$/;
 const input = document.querySelector('.text__hashtags');
@@ -39,12 +46,6 @@ const keydownHandler = (evt) => {
 };
 
 const keyupHandler = () => {
-  const HASHTAGS_LIMIT = 5;
-  const HASHTAG_MAX_LENGTH = 20;
-  const LETTERS_MIN = 0;
-  const LETTERS_MAX = 19;
-  const SYMBOLS_MIN = 0;
-  const SYMBOLS_MAX = 20;
   const hashtags = input.value.split(' ');
   const currentHashtag = hashtags[hashtags.length -1];
   if(!regHashtag.test(currentHashtag)) {
