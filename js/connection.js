@@ -1,12 +1,12 @@
-const getData = async (success, fail) => {
+const getData = async (callback) => {
 
   fetch('https://23.javascript.pages.academy/kekstagram/data')
     .then((response) => response.json())
-    .then((data) => success(data))
-    .catch(() => fail());
+    .then((data) => callback(data))
+    .catch(() => callback('error'));
 };
 
-const sendData = async (data, success, fail) => {
+const sendData = async (data, callback) => {
   fetch(
     'https://23.javascript.pages.academy/kekstagram',
     {
@@ -15,12 +15,12 @@ const sendData = async (data, success, fail) => {
     },
   ).then((response) => {
     if(response.ok) {
-      success();
+      callback('success');
     } else {
-      fail();
+      callback('error');
     }
   })
-    .catch(() => fail());
+    .catch(() => callback('error'));
 };
 
 export {

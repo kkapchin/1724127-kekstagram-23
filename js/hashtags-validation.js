@@ -10,10 +10,10 @@ const SYMBOLS_MAX = 20;
 
 const regHashtag = /^#[A-Za-zА-Яа-я0-9_]{1,19}$/;
 const regInput = /[A-Za-z0-9А-Яа-я #_]$/;
-const input = document.querySelector('.text__hashtags');
+const inputElement = document.querySelector('.text__hashtags');
 
 const getUniqHashtags = (hashtags) => {
-  const lowerCasedHashtags = input.value.toLowerCase().split(' ');
+  const lowerCasedHashtags = inputElement.value.toLowerCase().split(' ');
   let uniqIndexes = [];
   lowerCasedHashtags.filter((hashtag) => uniqIndexes.push(lowerCasedHashtags.indexOf(hashtag)));
   uniqIndexes = uniqIndexes.filter((item, index) => index === uniqIndexes.indexOf(item));
@@ -25,7 +25,7 @@ const getUniqHashtags = (hashtags) => {
 };
 
 const keydownHandler = (evt) => {
-  const hashtags = input.value.split(' ');
+  const hashtags = inputElement.value.split(' ');
   const currentHashtag = hashtags[hashtags.length -1];
 
   if(isEscEvent(evt)) {
@@ -41,47 +41,47 @@ const keydownHandler = (evt) => {
   }
   if(isSpaceEvent(evt)) {
     const uniqHashtags = getUniqHashtags(hashtags);
-    input.value = uniqHashtags.join(' ');
+    inputElement.value = uniqHashtags.join(' ');
   }
 };
 
 const keyupHandler = () => {
-  const hashtags = input.value.split(' ');
+  const hashtags = inputElement.value.split(' ');
   const currentHashtag = hashtags[hashtags.length -1];
   if(!regHashtag.test(currentHashtag)) {
     if(currentHashtag[0] !== '#') {
       hashtags[hashtags.length -1] = `#${currentHashtag.substring(LETTERS_MIN, LETTERS_MAX)}`;
-      input.value = hashtags.join(' ');
+      inputElement.value = hashtags.join(' ');
     }
     if(currentHashtag.length >= HASHTAG_MAX_LENGTH) {
       hashtags[hashtags.length -1] = currentHashtag.substring(SYMBOLS_MIN, SYMBOLS_MAX);
-      input.value = hashtags.join(' ');
-      input.value += ' #';
+      inputElement.value = hashtags.join(' ');
+      inputElement.value += ' #';
     }
   }
   if(hashtags.length > HASHTAGS_LIMIT) {
     hashtags.pop();
-    input.value = hashtags.join(' ');
+    inputElement.value = hashtags.join(' ');
   }
   if(getUniqHashtags(hashtags).length !== hashtags.length) {
-    input.setAttribute('style', 'border-color: #FF0000');
-    input.setCustomValidity('Один и тот же хэш-тег не может быть использован дважды');
-    input.reportValidity();
+    inputElement.setAttribute('style', 'border-color: #FF0000');
+    inputElement.setCustomValidity('Один и тот же хэш-тег не может быть использован дважды');
+    inputElement.reportValidity();
   } else {
-    input.removeAttribute('style');
-    input.setCustomValidity('');
+    inputElement.removeAttribute('style');
+    inputElement.setCustomValidity('');
   }
 };
 
 const focusoutHandler = () => {
-  const hashtags = input.value.split(' ');
+  const hashtags = inputElement.value.split(' ');
   const currentHashtag = hashtags[hashtags.length -1];
   if(currentHashtag === '#') {
     hashtags.pop();
-    input.value = hashtags.join(' ');
+    inputElement.value = hashtags.join(' ');
   }
 };
 
-input.addEventListener('keydown', keydownHandler);
-input.addEventListener('keyup', keyupHandler);
-input.addEventListener('focusout', focusoutHandler);
+inputElement.addEventListener('keydown', keydownHandler);
+inputElement.addEventListener('keyup', keyupHandler);
+inputElement.addEventListener('focusout', focusoutHandler);

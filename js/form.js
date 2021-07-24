@@ -38,6 +38,7 @@ const fileChangeHandler = (event) => {
   const effectValueElement = document.querySelector('.effect-level__value');
   const fieldsetElement = document.querySelector('.img-upload__effect-level');
   const cancelButtonElement = document.querySelector('.img-upload__cancel');
+  const cancelButtonElementClone = cancelButtonElement.cloneNode(true);
   const submitButtonElement = document.querySelector('#upload-submit');
   let currentEffect = 'effects__preview--none';
 
@@ -47,7 +48,7 @@ const fileChangeHandler = (event) => {
     previewElement.classList.add(currentEffect);
   };
 
-  const smallerBtnClickHandler = () => {
+  const decreaseButtonClickHandler = () => {
     switch (imgSizeElement.value) {
       case '100%':
         imgSizeElement.value = '75%';
@@ -64,7 +65,7 @@ const fileChangeHandler = (event) => {
     }
   };
 
-  const biggerBtnClickHandler = () => {
+  const increaseButtonClickHandler = () => {
     switch (imgSizeElement.value) {
       case '75%':
         imgSizeElement.value = '100%';
@@ -171,129 +172,10 @@ const fileChangeHandler = (event) => {
     });
   };
 
-  const submitClickHandler = (evt) => {
-    evt.preventDefault();
-    const bodyElement = document.querySelector('body');
-    const lastNodeElement = document.querySelector('#messages');
-    const cancelButtonElementClone = cancelButtonElement.cloneNode(true);
-
-    const onSuccess = () => {
-      const successElement = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
-      const coolButtonElement = successElement.querySelector('.success__button');
-      const coolButtonElementClone = coolButtonElement.cloneNode(true);
-      const successInnerElement = successElement.querySelector('.success__inner');
-
-      const documentEscKeydownHandler = (ev) => {
-        if(isEscEvent(ev)) {
-          ev.preventDefault();
-          bodyElement.classList.remove('modal-open');
-          coolButtonElement.replaceWith(coolButtonElementClone);
-          bodyElement.removeChild(successElement);
-          document.removeEventListener('keydown', documentEscKeydownHandler);
-        }
-      };
-
-      const coolBtnClickHandler = () => {
-        bodyElement.classList.remove('modal-open');
-        coolButtonElement.replaceWith(coolButtonElementClone);
-        bodyElement.removeChild(successElement);
-        document.removeEventListener('keydown', documentEscKeydownHandler);
-      };
-
-      const successElementClickHandler = (ev) => {
-        ev.stopPropagation();
-        bodyElement.classList.remove('modal-open');
-        coolButtonElement.replaceWith(coolButtonElementClone);
-        bodyElement.removeChild(successElement);
-        document.removeEventListener('keydown', documentEscKeydownHandler);
-      };
-
-      overlayElement.classList.add('hidden');
-      formElement.reset();
-      fileElement.value = null;
-      cancelButtonElement.replaceWith(cancelButtonElementClone);
-      deleteEventListener(decreaseButtonElement);
-      deleteEventListener(increaseButtonElement);
-      deleteEventListener(submitButtonElement);
-      frameElement.forEach((effect) => {
-        deleteEventListener(effect);
-      });
-      setDefaultEffect();
-      fieldsetElement.classList.remove('hidden');
-      if(sliderElement.noUiSlider) {
-        sliderElement.noUiSlider.destroy();
-      }
-      previewElement.style.filter = null;
-      bodyElement.appendChild(successElement, lastNodeElement.nextSibling);
-      successElement.addEventListener('click', successElementClickHandler);
-      successInnerElement.addEventListener('click', (e) => e.stopPropagation());
-      document.addEventListener('keydown', documentEscKeydownHandler);
-      coolButtonElement.addEventListener('click', coolBtnClickHandler);
-    };
-
-    const onFail = () => {
-      const errorElement = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
-      const errorButtonElement = errorElement.querySelector('.error__button');
-      const errorButtonElementClone = errorButtonElement.cloneNode(true);
-      const errorInnerElement = errorElement.querySelector('.error__inner');
-
-      const documentEscKeydownHandler = (ev) => {
-        if(isEscEvent(ev)) {
-          ev.preventDefault();
-          bodyElement.classList.remove('modal-open');
-          errorButtonElement.replaceWith(errorButtonElementClone);
-          bodyElement.removeChild(errorElement);
-          document.removeEventListener('keydown', documentEscKeydownHandler);
-        }
-      };
-
-      const errorBtnClickHandler = () => {
-        bodyElement.classList.remove('modal-open');
-        errorButtonElement.replaceWith(errorButtonElementClone);
-        bodyElement.removeChild(errorElement);
-        document.removeEventListener('keydown', documentEscKeydownHandler);
-      };
-
-      const errorElementClickHandler = (ev) => {
-        ev.stopPropagation();
-        bodyElement.classList.remove('modal-open');
-        errorButtonElement.replaceWith(errorButtonElementClone);
-        bodyElement.removeChild(errorElement);
-        document.removeEventListener('keydown', documentEscKeydownHandler);
-      };
-
-      overlayElement.classList.add('hidden');
-      formElement.reset();
-      fileElement.value = null;
-      cancelButtonElement.replaceWith(cancelButtonElementClone);
-      deleteEventListener(decreaseButtonElement);
-      deleteEventListener(increaseButtonElement);
-      deleteEventListener(submitButtonElement);
-      frameElement.forEach((effect) => {
-        deleteEventListener(effect);
-      });
-      setDefaultEffect();
-      fieldsetElement.classList.remove('hidden');
-      if(sliderElement.noUiSlider) {
-        sliderElement.noUiSlider.destroy();
-      }
-      previewElement.style.filter = null;
-      bodyElement.appendChild(errorElement, lastNodeElement.nextSibling);
-      errorElement.addEventListener('click', errorElementClickHandler);
-      errorInnerElement.addEventListener('click', (e) => e.stopPropagation());
-      document.addEventListener('keydown', documentEscKeydownHandler);
-      errorButtonElement.addEventListener('click', errorBtnClickHandler);
-    };
-
-    if(hashtagElement.checkValidity()) {
-      const formData = new FormData(formElement);
-      sendData(formData, onSuccess, onFail);
-    }
-  };
-
   const reset = () => {
     formElement.reset();
     fileElement.value = null;
+    cancelButtonElement.replaceWith(cancelButtonElementClone);
     deleteEventListener(decreaseButtonElement);
     deleteEventListener(increaseButtonElement);
     deleteEventListener(submitButtonElement);
@@ -306,6 +188,57 @@ const fileChangeHandler = (event) => {
       sliderElement.noUiSlider.destroy();
     }
     previewElement.style.filter = null;
+  };
+
+  const submitButtonClickHandler = (evt) => {
+    evt.preventDefault();
+    const bodyElement = document.querySelector('body');
+    const lastNodeElement = document.querySelector('#messages');
+
+    const onResponse = (response) => {
+      const parentElement = document.querySelector(`#${response}`).content.querySelector(`.${response}`).cloneNode(true);
+      const buttonElement = parentElement.querySelector(`.${response}__button`);
+      const buttonCloneElement = buttonElement.cloneNode(true);
+      const innerElement = parentElement.querySelector(`.${response}__inner`);
+
+      const documentEscKeydownHandler = (ev) => {
+        if(isEscEvent(ev)) {
+          ev.preventDefault();
+          bodyElement.classList.remove('modal-open');
+          buttonElement.replaceWith(buttonCloneElement);
+          bodyElement.removeChild(parentElement);
+          document.removeEventListener('keydown', documentEscKeydownHandler);
+        }
+      };
+
+      const buttonElementClickHandler = () => {
+        bodyElement.classList.remove('modal-open');
+        buttonElement.replaceWith(buttonCloneElement);
+        bodyElement.removeChild(parentElement);
+        document.removeEventListener('keydown', documentEscKeydownHandler);
+      };
+
+      const parentElementClickHandler = (ev) => {
+        ev.stopPropagation();
+        bodyElement.classList.remove('modal-open');
+        buttonElement.replaceWith(buttonCloneElement);
+        bodyElement.removeChild(parentElement);
+        document.removeEventListener('keydown', documentEscKeydownHandler);
+      };
+
+      overlayElement.classList.add('hidden');
+      reset();
+      bodyElement.appendChild(parentElement, lastNodeElement.nextSibling);
+      parentElement.addEventListener('click', parentElementClickHandler);
+      innerElement.addEventListener('click', (e) => e.stopPropagation());
+      document.addEventListener('keydown', documentEscKeydownHandler);
+      buttonElement.addEventListener('click', buttonElementClickHandler);
+    };
+
+    if(hashtagElement.checkValidity()) {
+      const formData = new FormData(formElement);
+      sendData(formData, onResponse);
+    }
   };
 
   resetInputs();
@@ -332,9 +265,9 @@ const fileChangeHandler = (event) => {
   frameElement.forEach((effect) => {
     effect.addEventListener('click', effectClickHandler);
   });
-  decreaseButtonElement.addEventListener('click', smallerBtnClickHandler);
-  increaseButtonElement.addEventListener('click', biggerBtnClickHandler);
-  submitButtonElement.addEventListener('click', submitClickHandler);
+  decreaseButtonElement.addEventListener('click', decreaseButtonClickHandler);
+  increaseButtonElement.addEventListener('click', increaseButtonClickHandler);
+  submitButtonElement.addEventListener('click', submitButtonClickHandler);
   closePopup(cancelButtonElement, overlayElement, reset);
 };
 

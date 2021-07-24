@@ -15,57 +15,6 @@ const defaultData = [];
 const randomData = [];
 const discussedData = [];
 
-const onFail = () => {
-  const bodyElement = document.querySelector('body');
-  const lastNodeElement = document.querySelector('#messages');
-  const errorElement = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
-  const errorTitleElement = errorElement.querySelector('.error__title');
-  const errorButtonElement = errorElement.querySelector('.error__button');
-  const errorInnerElement = errorElement.querySelector('.error__inner');
-
-  errorTitleElement.textContent = 'Что-то пошло не так';
-  errorButtonElement.textContent = 'Вернуться на главную';
-  const errorBtnClone = errorButtonElement.cloneNode(true);
-
-  const redirectHome = () => {
-    window.location.href='/';
-  };
-
-  const documentEscKeydownHandler = (evt) => {
-    if(isEscEvent(evt)) {
-      evt.preventDefault();
-      bodyElement.classList.remove('modal-open');
-      errorButtonElement.replaceWith(errorBtnClone);
-      bodyElement.removeChild(errorElement);
-      document.removeEventListener('keydown', documentEscKeydownHandler);
-      redirectHome();
-    }
-  };
-
-  const errorBtnClickHandler = () => {
-    bodyElement.classList.remove('modal-open');
-    errorButtonElement.replaceWith(errorBtnClone);
-    bodyElement.removeChild(errorElement);
-    document.removeEventListener('keydown', documentEscKeydownHandler);
-    redirectHome();
-  };
-
-  const errorElementClickHandler = (evt) => {
-    evt.stopPropagation();
-    bodyElement.classList.remove('modal-open');
-    errorButtonElement.replaceWith(errorBtnClone);
-    bodyElement.removeChild(errorElement);
-    document.removeEventListener('keydown', documentEscKeydownHandler);
-    redirectHome();
-  };
-
-  bodyElement.appendChild(errorElement, lastNodeElement.nextSibling);
-  errorElement.addEventListener('click', errorElementClickHandler);
-  errorInnerElement.addEventListener('click', (e) => e.stopPropagation());
-  document.addEventListener('keydown', documentEscKeydownHandler);
-  errorButtonElement.addEventListener('click', errorBtnClickHandler);
-};
-
 const renderGallery = (data) => {
   let index = 0;
   data.forEach(({url, description, likes, comments}) => {
@@ -163,11 +112,60 @@ const showFilters = () => {
   discussedFilterElement.addEventListener('click', discussedFilterClickHandler);
 };
 
-const onSuccess = (pictures) => {
-  createDefaultData(defaultData, pictures);
-  renderGallery(defaultData);
-  renderFullscreenPicture(defaultData);
-  showFilters();
+const onResponse = (response) => {
+  if (response === 'error') {
+    const bodyElement = document.querySelector('body');
+    const lastNodeElement = document.querySelector('#messages');
+    const errorElement = document.querySelector(`#${response}`).content.querySelector(`.${response}`).cloneNode(true);
+    const errorTitleElement = errorElement.querySelector(`.${response}__title`);
+    const errorButtonElement = errorElement.querySelector(`.${response}__button`);
+    const errorInnerElement = errorElement.querySelector(`.${response}__inner`);
+
+    errorTitleElement.textContent = 'Что-то пошло не так';
+    errorButtonElement.textContent = 'Вернуться на главную';
+    const errorButtonCloneElement = errorButtonElement.cloneNode(true);
+
+    const reset = (onDocumentHandler) => {
+      bodyElement.classList.remove('modal-open');
+      errorButtonElement.replaceWith(errorButtonCloneElement);
+      bodyElement.removeChild(errorElement);
+      document.removeEventListener('keydown', onDocumentHandler);
+    };
+
+    const redirectHome = () => {
+      window.location.href='/';
+    };
+
+    const documentEscKeydownHandler = (evt) => {
+      if(isEscEvent(evt)) {
+        evt.preventDefault();
+        reset(documentEscKeydownHandler);
+        redirectHome();
+      }
+    };
+
+    const errorButtonClickHandler = () => {
+      reset(documentEscKeydownHandler);
+      redirectHome();
+    };
+
+    const errorElementClickHandler = (evt) => {
+      evt.stopPropagation();
+      reset(documentEscKeydownHandler);
+      redirectHome();
+    };
+
+    bodyElement.appendChild(errorElement, lastNodeElement.nextSibling);
+    errorElement.addEventListener('click', errorElementClickHandler);
+    errorInnerElement.addEventListener('click', (e) => e.stopPropagation());
+    document.addEventListener('keydown', documentEscKeydownHandler);
+    errorButtonElement.addEventListener('click', errorButtonClickHandler);
+  } else {
+    createDefaultData(defaultData, response);
+    renderGallery(defaultData);
+    renderFullscreenPicture(defaultData);
+    showFilters();
+  }
 };
 
-getData(onSuccess, onFail);
+getData(onResponse);
